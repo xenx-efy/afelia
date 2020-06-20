@@ -2,10 +2,22 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * Class User
+ * @package App\Models
+ * @property integer $id User unique identifier
+ * @property string $name User name
+ * @property string $email User email
+ * @property string $password User password
+ * @property boolean $isAdmin Attribute indicating whether this user is an administrator.
+ * @property Carbon $createdAt Date of creating this user.
+ * @property Carbon $updatedAt Date of updating info about this user.
+ */
 class User extends Authenticatable
 {
     use Notifiable;
