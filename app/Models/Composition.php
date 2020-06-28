@@ -19,18 +19,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Composition extends Model
 {
     /**
+     * Then name of the "updated at" column.
+     *
+     * @var string
+     */
+    const UPDATED_AT = 'last_played';
+
+    /**
+     * Turn off created_at column.
+     */
+    const CREATED_AT = null;
+
+    /**
      * The table associated with model.
      *
      * @var string
      */
     protected $table = 'compositions';
-
-    /**
-     * Attributes should be mutated to dates.
-     *
-     * @var string[]
-     */
-    protected $dates = ['created_at', 'updated_at'];
 
     /**
      * The attributes to allow with a mass assigment.
@@ -39,16 +44,13 @@ class Composition extends Model
      */
     protected $fillable = ['title'];
 
+
     /**
-     * Map the table columns names with models magic properties,
-     * $model->createdAt for example
+     * Data types fields in table
      *
      * @var string[]
      */
-    protected $maps = [
-        'created_at' => 'createdAt',
-        'updated_at' => 'updatedAt'
-    ];
+    protected $dates = ['last_played'];
 
     /**
      * Relation with composer model.

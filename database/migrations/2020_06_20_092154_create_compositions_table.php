@@ -17,7 +17,7 @@ class CreateCompositionsTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->unsignedInteger('composer_id');
-            $table->timestamps();
+            $table->timestamp('last_played');
         });
     }
 
