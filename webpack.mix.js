@@ -12,10 +12,15 @@ mix.webpackConfig({
         ]
     }
 }).js(
-    "resources/js/app.js",
+    "resources/js/base.js",
     "public/js"
-).
-    sass(
-        "resources/sass/app.scss",
-        "public/css"
-    );
+).sass(
+    "resources/sass/base.scss",
+    "public/css"
+).sass(
+    "resources/sass/login.scss",
+    "public/css"
+).sass(
+    "resources/sass/tracks.scss",
+    "public/css"
+);
