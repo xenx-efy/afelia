@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnusedPrivateFieldInspection */
 
 namespace App\Models;
 
@@ -9,8 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class Composition
+ *
  * @package App\Models
- * @property integer $id Composition unique identifier.
+ * @property int $id Composition unique identifier.
  * @property Composer $composer Composer of this composition.
  * @property string $title Composition title.
  * @property Carbon $createdAt Date of create composition.
@@ -20,15 +21,13 @@ class Composition extends Model
 {
     /**
      * Then name of the "updated at" column.
-     *
-     * @var string
      */
-    const UPDATED_AT = 'last_played';
+    private const UPDATED_AT = 'last_played';
 
     /**
      * Turn off created_at column.
      */
-    const CREATED_AT = null;
+    private const CREATED_AT = null;
 
     /**
      * The table associated with model.
@@ -44,11 +43,10 @@ class Composition extends Model
      */
     protected $fillable = ['title'];
 
-
     /**
      * Data types fields in table
      *
-     * @var string[]
+     * @var array<string>
      */
     protected $dates = ['last_played'];
 

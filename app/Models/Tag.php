@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class Tag
+ *
  * @package App\Models
+ *
  * @property integer $id Tag unique identifier
  * @property string $title Tag name
  */
@@ -23,7 +25,7 @@ class Tag extends Model
     /**
      * Attributes allows to mass assigment.
      *
-     * @var string[]
+     * @var array<string>
      */
     protected $fillable = ['title'];
 
