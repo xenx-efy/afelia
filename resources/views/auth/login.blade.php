@@ -18,7 +18,7 @@
                             <span class="placeholder">Ваше имя</span>
                         </label>
                         <label>
-                            <input type="text" name="instrument">
+                            <input type="text" name="password">
                             <span class="placeholder">Ваш инструмент</span>
                         </label>
                         @error('email')

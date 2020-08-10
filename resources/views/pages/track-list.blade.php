@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Список')
+
 @push('any-styles')
     <link href={{ asset('/css/tracks.css') }} rel="stylesheet">
 @endpush

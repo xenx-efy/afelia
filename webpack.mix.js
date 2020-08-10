@@ -1,3 +1,5 @@
+"use strict";
+
 const mix = require("laravel-mix");
 
 mix.webpackConfig({
@@ -7,20 +9,32 @@ mix.webpackConfig({
                 "enforce": "pre",
                 "exclude": /node_modules/u,
                 "loader": "eslint-loader",
-                "test": "/.(js|vue)$/"
+                "options": {
+                    "emitWarning": true
+                },
+                "test": /\.(js)?$/u
             }
         ]
+    },
+    "output": {
+        "chunkFilename": "js/components/[name].js",
+        "publicPath": "/"
     }
-}).js(
+});
+
+mix.js(
     "resources/js/base.js",
     "public/js"
-).sass(
-    "resources/sass/base.scss",
-    "public/css"
-).sass(
-    "resources/sass/login.scss",
-    "public/css"
-).sass(
-    "resources/sass/tracks.scss",
-    "public/css"
-);
+).
+    sass(
+        "resources/sass/base.scss",
+        "public/css"
+    ).
+    sass(
+        "resources/sass/login.scss",
+        "public/css"
+    ).
+    sass(
+        "resources/sass/tracks.scss",
+        "public/css"
+    );
