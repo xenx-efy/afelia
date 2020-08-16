@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Tag extends Model
 {
+
+    public $timestamps = false;
+
     /**
      * The table associated with model.
      *

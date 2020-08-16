@@ -48,14 +48,7 @@ class Composition extends Model
      *
      * @var array<string>
      */
-//    protected $dates = ['last_played'];
-
-    protected $dateFormat = 'd.m.Y';
-
-    public function getDateFormat()
-    {
-        return $this->dateFormat;
-    }
+    protected $dates = ['last_played'];
 
     /**
      * Relation with composer model.

@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Composition;
+use App\Models\Tag;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -12,19 +14,19 @@ class CompositionTagSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('composition_tag')->insert([
-           'composition_id' => 1,
-           'tag_id' => 1
-        ]);
-
-        DB::table('composition_tag')->insert([
-            'composition_id' => 2,
-            'tag_id' => 2
-        ]);
-
-        DB::table('composition_tag')->insert([
-            'composition_id' => 3,
-            'tag_id' => 3
-        ]);
+        foreach (Composition::all() as $composition) {
+            DB::table('composition_tag')->insert([
+                'composition_id' => $composition->id,
+                'tag_id' => Tag::inRandomOrder()->first()->id
+            ]);
+            DB::table('composition_tag')->insert([
+                'composition_id' => $composition->id,
+                'tag_id' => Tag::inRandomOrder()->first()->id
+            ]);
+            DB::table('composition_tag')->insert([
+                'composition_id' => $composition->id,
+                'tag_id' => Tag::inRandomOrder()->first()->id
+            ]);
+        }
     }
 }

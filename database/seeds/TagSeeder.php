@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
 class TagSeeder extends Seeder
@@ -11,20 +12,6 @@ class TagSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tags')->insert([
-            'title' => 'Печальная'
-        ]);
-
-        DB::table('tags')->insert([
-            'title' => 'Веселая'
-        ]);
-
-        DB::table('tags')->insert([
-            'title' => 'Нейтральная'
-        ]);
-
-        DB::table('tags')->insert([
-            'title' => 'Вроде норм'
-        ]);
+        factory(Tag::class, 50)->create();
     }
 }

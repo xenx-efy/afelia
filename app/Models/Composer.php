@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Composer extends Model
 {
+
+    public $timestamps = false;
     /**
      * The table associated with model.
      *

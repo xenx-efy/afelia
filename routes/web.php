@@ -9,4 +9,9 @@ Auth::routes(['register' => false]);
 
 Route::get('/track-list', [TrackListController::class, 'index'])->name('track-list');
 
-Route::get('/', [CompositionController::class, 'index']);
+Route::get('/', [TrackListController::class, 'index']);
+
+Route::prefix('async')->group(function () {
+    Route::get('/search-by-title', [TrackListController::class, 'searchByTitle']);
+});
+

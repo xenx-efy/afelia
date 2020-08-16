@@ -60,7 +60,9 @@
     </main>
     <div class="all-tags">
         <ul class="tags-list">
-            
+           @foreach($tags as $tag)
+               <li class="tags-list_item">{{ $tag->title }}</li>
+            @endforeach
         </ul>
     </div>
 @endsection
