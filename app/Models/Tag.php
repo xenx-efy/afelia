@@ -32,6 +32,8 @@ class Tag extends Model
      */
     protected $fillable = ['title'];
 
+    protected $hidden = ['pivot'];
+
     /**
      * Relation with Composition model.
      *
