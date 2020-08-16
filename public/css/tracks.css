@@ -1,32 +1,20 @@
 @charset "UTF-8";
 
-.content {
+body {
   padding: 100px 0px;
   min-height: 100vh;
   background: linear-gradient(45deg, #3dcdf7, transparent);
   position: relative;
   z-index: 1;
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(0.8);
-  opacity: 0;
-  visibility: hidden;
-  transition: 0.4s 0.3s;
 }
 
 @media screen and (max-width: 768px) {
-  .content {
+  body {
     padding: 60px 0px;
   }
 }
 
-.content.show {
-  transform: scale(1);
-  opacity: 1;
-  visibility: visible;
-}
-
-.content:after {
+body:after {
   content: "";
   display: block;
   position: fixed;
@@ -40,7 +28,7 @@
   z-index: -1;
 }
 
-.content .section-title {
+header .section-title {
   text-align: center;
   font-size: 38px;
   line-height: 1.14em;
@@ -48,26 +36,26 @@
 }
 
 @media screen and (max-width: 480px) {
-  .content .section-title {
+  header .section-title {
     font-size: 30px;
   }
 }
 
-.content .search {
+header .search {
   align-items: center;
   flex-direction: row;
   max-width: 760px;
   margin: 0 auto;
 }
 
-.content .search label {
+header .search label {
   width: auto;
   margin-bottom: 0px;
   flex-grow: 1;
   margin-right: 10px;
 }
 
-.content .search-reset {
+header .search-reset {
   width: 0px;
   height: 0px;
   display: flex;
@@ -85,7 +73,7 @@
   transition: 0.2s ease-in-out;
 }
 
-.content .search-reset.show {
+header .search-reset.show {
   transform: scale(1);
   opacity: 1;
   width: 50px;
@@ -94,7 +82,7 @@
   margin-right: 10px;
 }
 
-.content .search button.hide {
+header .search button.hide {
   width: 0;
   padding: 0;
   height: 0;
@@ -103,25 +91,19 @@
 }
 
 @media screen and (max-width: 480px) {
-  .content .search button {
+  header .search button {
     width: 85px;
     padding: 0 20px;
     font-size: 14px;
   }
 }
 
-.content .content-table_filter {
-  margin-top: 80px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.content .content-table {
+.table {
   margin: 60px 0 0px;
 }
 
 @media screen and (max-width: 980px) {
-  .content .content-table {
+  .table {
     display: flex;
     flex-wrap: wrap;
     margin-left: -5px;
@@ -130,12 +112,18 @@
 }
 
 @media screen and (max-width: 768px) {
-  .content .content-table {
+  .table {
     margin: 30px 0 0px;
   }
 }
 
-.content .content-table_head {
+.table-filter {
+  margin-top: 80px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.table-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -146,12 +134,12 @@
 }
 
 @media screen and (max-width: 560px) {
-  .content .content-table_head {
+  .table-head {
     flex-direction: column;
   }
 }
 
-.content .content-table_head-cell {
+.table-head_cell {
   color: #fff;
   font-weight: bold;
   text-shadow: 1px 1px 0px #696969;
@@ -159,18 +147,18 @@
 }
 
 @media screen and (max-width: 768px) {
-  .content .content-table_head-cell {
+  .table-head_cell {
     font-size: 14px;
   }
 }
 
 @media screen and (max-width: 560px) {
-  .content .content-table_head-cell {
+  .table-head_cell {
     margin-bottom: 5px;
   }
 }
 
-.content .content-table_head-cell .icon {
+.table-head_cell .icon {
   display: inline-block;
   width: 30px;
   height: 30px;
@@ -184,63 +172,63 @@
   transition: 0.3s ease-in-out;
 }
 
-.content .content-table_head-cell .icon.reverse {
+.table-head_cell .icon.reverse {
   transform: rotate(180deg);
 }
 
-.content .content-table_head-cell-title {
+.table-head_cell-title {
   font-weight: bold;
   width: 50%;
   min-width: 260px;
 }
 
 @media screen and (max-width: 768px) {
-  .content .content-table_head-cell-title {
+  .table-head_cell-title {
     min-width: 235px;
   }
 }
 
 @media screen and (max-width: 560px) {
-  .content .content-table_head-cell-title {
+  .table-head_cell-title {
     width: 100%;
     text-align: center;
   }
 }
 
-.content .content-table_head-cell-tags {
+.table-head_cell-tags {
   width: 25%;
   text-align: center;
 }
 
 @media screen and (max-width: 560px) {
-  .content .content-table_head-cell-tags {
+  .table-head_cell-tags {
     width: 100%;
   }
 }
 
-.content .content-table_head-cell-updated_at,
-.content .content-table_head-cell-date {
+.table-head_cell-updated_at,
+.table-head_cell-date {
   width: 25%;
   min-width: 205px;
   text-align: right;
 }
 
 @media screen and (max-width: 768px) {
-  .content .content-table_head-cell-updated_at,
-  .content .content-table_head-cell-date {
+  .table-head_cell-updated_at,
+  .table-head_cell-date {
     min-width: 190px;
   }
 }
 
 @media screen and (max-width: 560px) {
-  .content .content-table_head-cell-updated_at,
-  .content .content-table_head-cell-date {
+  .table-head_cell-updated_at,
+  .table-head_cell-date {
     width: 100%;
     text-align: center;
   }
 }
 
-.content .content-table_row {
+.table-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -251,7 +239,7 @@
 }
 
 @media screen and (max-width: 980px) {
-  .content .content-table_row {
+  .table-row {
     flex-direction: column;
     width: calc(50% - 10px);
     margin: 0 5px 10px;
@@ -259,54 +247,54 @@
 }
 
 @media screen and (max-width: 480px) {
-  .content .content-table_row {
+  .table-row {
     width: calc(100% - 10px);
   }
 }
 
-.content .content-table_row-cell-title {
+.table-row_cell-title {
   font-weight: bold;
   width: 50%;
 }
 
 @media screen and (max-width: 980px) {
-  .content .content-table_row-cell-title {
+  .table-row_cell-title {
     width: 100%;
     text-align: center;
     margin-bottom: 10px;
   }
 }
 
-.content .content-table_row-cell-tags {
+.table-row_cell-tags {
   width: 25%;
   text-align: center;
 }
 
 @media screen and (max-width: 980px) {
-  .content .content-table_row-cell-tags {
+  .table-row_cell-tags {
     width: 100%;
     margin-bottom: 10px;
   }
 }
 
-.content .content-table_row-cell-updated_at,
-.content .content-table_row-cell-date {
+.table-row_cell-updated_at,
+.table-row_cell-date {
   width: 25%;
   min-width: 205px;
   text-align: right;
 }
 
 @media screen and (max-width: 980px) {
-  .content .content-table_row-cell-updated_at,
-  .content .content-table_row-cell-date {
+  .table-row_cell-updated_at,
+  .table-row_cell-date {
     width: 100%;
     order: 2;
     text-align: center;
     margin-bottom: 10px;
   }
 
-  .content .content-table_row-cell-updated_at:before,
-  .content .content-table_row-cell-date:before {
+  .table-row_cell-updated_at:before,
+  .table-row_cell-date:before {
     content: "\41F\43E\441\43B\435\434\43D\435\435   \438\441\43F\43E\43B\43D\435\43D\438\435:";
     display: block;
     font-size: 10px;

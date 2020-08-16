@@ -113,7 +113,9 @@ form button {
 }
 
 form input[type=text],
-form input[type=email] {
+form input[type=email],
+form input[type=password],
+form input[type=number] {
   height: 50px;
   padding: 17px 25px 10px 25px;
   border-radius: 25px;
@@ -144,7 +146,7 @@ form .error.show {
   opacity: 1;
 }
 
-form button {
+form button[type=submit] {
   height: 50px;
   width: 130px;
   padding: 0 30px;
@@ -160,7 +162,7 @@ form button {
   transition: 0.2s ease-in-out;
 }
 
-form button:hover {
+form button[type=submit]:hover {
   transform: scale(0.95);
 }
 

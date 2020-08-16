@@ -7,7 +7,7 @@
         @guest
             <title>{{ config('app.name', 'Laravel') }}</title>
         @else
-            <title>@section('title') | {{ config('app.name', 'Laravel') }}</title>
+            <title>@yield('title') | {{ config('app.name', 'Laravel') }}</title>
         @endguest
         <!-- Fonts -->
         <link href={{ asset('/css/base.css') }} rel="stylesheet">

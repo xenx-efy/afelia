@@ -15,11 +15,11 @@
                         @csrf
                         <label>
                             <input type="email" name="email">
-                            <span class="placeholder">Ваше имя</span>
+                            <span class="placeholder">Ваше email</span>
                         </label>
                         <label>
-                            <input type="text" name="password">
-                            <span class="placeholder">Ваш инструмент</span>
+                            <input type="password" name="password">
+                            <span class="placeholder">Ваш пароль</span>
                         </label>
                         @error('email')
                             <div class="error" role="alert">
@@ -33,7 +33,7 @@
                             </script>
                         @enderror
                         <div class="flex align-center justify-between">
-                            <button>Войти</button>
+                            <button type="submit">Войти</button>
                             @if (Route::has('password.request'))
                                 <a class="cl-white fgt-pass" href="{{ route('password.request') }}">
                                     {{ __('Forgot Your Password?') }}

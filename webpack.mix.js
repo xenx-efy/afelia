@@ -25,6 +25,9 @@ mix.webpackConfig({
 mix.js(
     "resources/js/base.js",
     "public/js"
+).js(
+    "resources/js/track.js",
+    "public/js"
 ).
     sass(
         "resources/sass/base.scss",

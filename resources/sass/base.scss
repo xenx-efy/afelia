@@ -86,7 +86,9 @@ form{
         font-size: inherit;
     }
     input[type="text"],
-    input[type="email"] {
+    input[type="email"],
+    input[type="password"],
+    input[type="number"] {
         height: 50px;
         padding: 17px 25px 10px 25px;
         border-radius: 25px;
@@ -116,7 +118,7 @@ form{
         transform: scale(1);
         opacity: 1;
     }
-    button {
+    button[type="submit"] {
         height: 50px;
         width: 130px;
         padding: 0 30px;
