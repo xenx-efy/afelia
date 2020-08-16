@@ -42,8 +42,8 @@ const getCompositions = (url) => {
 
 (() => {
 
-    const form = document.search,
-        {btnSubmit, btnReset, searchString, filterTitle, filterDate} = form,
+    const {searchForm} = document,
+        {btnSubmit, btnReset, searchString, filterTitle, filterDate} = searchForm,
         getFilterParams = {
 
             "title": () => `title=${encodeURIComponent(filterTitle.value)}`,
@@ -66,7 +66,7 @@ const getCompositions = (url) => {
             }
         };
 
-    form.addEventListener("submit", (event) => {
+    searchForm.addEventListener("submit", (event) => {
 
         event.preventDefault();
         const url = `/api/compositions?
@@ -95,13 +95,43 @@ const getCompositions = (url) => {
 
     btnReset.addEventListener("click", () => {
 
-        form.reset();
+        searchForm.reset();
         const url = "/api/compositions";
 
         getCompositions(url);
 
         btnReset.classList.remove("show");
         btnSubmit.classList.remove("hide");
+
+    });
+
+    const tagsBtn = searchForm.querySelector(".tag-btn"),
+        $allTags = document.querySelector(".all-tags .tags-list");
+
+    const modalCookie = modal({
+        "title": "Поиск по тегам",
+        "content": `<form name="tagsForm">${$allTags.outerHTML}
+        <div class="btns text-center">
+        <button type="submit" name="btnSubmit">Поиск</button>
+        <button type="reset" name="btnReset" class="disagree">Сбросить</button>
+        </div></form>
+        `,
+        "class": "tags-popup",
+        "onBuild": () => {
+
+            const {tagsForm} = document,
+                tags = tagsForm["tags[]"];
+
+            // eslint-disable-next-line no-console
+            console.log(tags);
+
+        }
+    });
+
+    tagsBtn.addEventListener("click", (event) => {
+
+        event.preventDefault();
+        modalCookie.show();
 
     });
 

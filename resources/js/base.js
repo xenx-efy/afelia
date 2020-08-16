@@ -87,10 +87,22 @@ window.modal = (param) => {
 
     const createModal = () => {
 
+        let title = param.title || "";
+        const {content} = param;
+
+        if (title.length) {
+
+            title = `
+            <div class="modal-window_title">${title}</div>
+            `;
+
+        }
+
         const html = `<div class="modal-window">
             <button class="close-btn close"><img src="../image/close.svg"></button>
                 <div class="modal-window_content">
-                    ${param.content}
+                    ${title}
+                    ${content}
                 </div>
             </div>`;
         const modal = document.createElement("div"),

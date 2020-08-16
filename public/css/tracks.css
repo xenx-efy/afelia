@@ -348,3 +348,33 @@ header .search button.hide {
   color: #fff;
 }
 
+.tags-popup .tags-list label {
+  display: inline-block;
+  width: auto;
+  margin: 0;
+}
+
+.tags-popup .tags-list label input:checked + .tags-list_item {
+  background: #2095ed;
+  color: #fff;
+}
+
+.tags-popup .tags-list_item {
+  cursor: pointer;
+}
+
+.tags-popup .tags-list_item:hover,
+.tags-popup .tags-list_item .active {
+  background: #2095ed;
+  color: #fff;
+}
+
+.tags-popup .btns {
+  width: 100%;
+  margin-top: 30px;
+}
+
+.tags-popup .btns button {
+  margin: 0 5px;
+}
+

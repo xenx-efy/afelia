@@ -10,9 +10,8 @@
     <header>
         <div class="container">
             <h2 class="section-title">Календарь учета произведений</h2>
-            <form class="search" name="search" id="search">
+            <form class="search" name="searchForm" id="search">
                 <input type="hidden" name="filterTitle" value="asc">
-                <input type="hidden" name="filterTags" value="">
                 <input type="hidden" name="filterDate" value="asc">
                 <button class="tag-btn"><img src="./image/tag.svg"></button>
                 <label>
@@ -58,10 +57,15 @@
             </div>
         </div>
     </main>
-    <div class="all-tags">
+    <div class="all-tags hidden">
         <ul class="tags-list">
            @foreach($tags as $tag)
-               <li class="tags-list_item">{{ $tag->title }}</li>
+                    <label>
+                        <input type="checkbox" name="tags[]" value="{{ $tag->title }}" class="hidden">
+                        <li class="tags-list_item">
+                            {{ $tag->title }}
+                        </li>
+                    </label>
             @endforeach
         </ul>
     </div>

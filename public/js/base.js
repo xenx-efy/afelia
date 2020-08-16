@@ -152,7 +152,14 @@ window.requestDate = function (url) {
 
 window.modal = function (param) {
   var createModal = function createModal() {
-    var html = "<div class=\"modal-window\">\n            <button class=\"close-btn close\"><img src=\"../image/close.svg\"></button>\n                <div class=\"modal-window_content\">\n                    ".concat(param.content, "\n                </div>\n            </div>");
+    var title = param.title || "";
+    var content = param.content;
+
+    if (title.length) {
+      title = "\n            <div class=\"modal-window_title\">".concat(title, "</div>\n            ");
+    }
+
+    var html = "<div class=\"modal-window\">\n            <button class=\"close-btn close\"><img src=\"../image/close.svg\"></button>\n                <div class=\"modal-window_content\">\n                    ".concat(title, "\n                    ").concat(content, "\n                </div>\n            </div>");
     var modal = document.createElement("div"),
         extraClasses = param["class"] || "";
     modal.className = "modal hide ".concat(extraClasses);
@@ -228,10 +235,10 @@ window.modal = function (param) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /var/www/html/resources/js/base.js */"./resources/js/base.js");
-__webpack_require__(/*! /var/www/html/resources/sass/base.scss */"./resources/sass/base.scss");
-__webpack_require__(/*! /var/www/html/resources/sass/login.scss */"./resources/sass/login.scss");
-module.exports = __webpack_require__(/*! /var/www/html/resources/sass/tracks.scss */"./resources/sass/tracks.scss");
+__webpack_require__(/*! /Users/admin/Documents/orchestra/afelia/resources/js/base.js */"./resources/js/base.js");
+__webpack_require__(/*! /Users/admin/Documents/orchestra/afelia/resources/sass/base.scss */"./resources/sass/base.scss");
+__webpack_require__(/*! /Users/admin/Documents/orchestra/afelia/resources/sass/login.scss */"./resources/sass/login.scss");
+module.exports = __webpack_require__(/*! /Users/admin/Documents/orchestra/afelia/resources/sass/tracks.scss */"./resources/sass/tracks.scss");
 
 
 /***/ })

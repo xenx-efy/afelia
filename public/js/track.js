@@ -119,12 +119,13 @@ var getCompositions = function getCompositions(url) {
 };
 
 (function () {
-  var form = document.search,
-      btnSubmit = form.btnSubmit,
-      btnReset = form.btnReset,
-      searchString = form.searchString,
-      filterTitle = form.filterTitle,
-      filterDate = form.filterDate,
+  var _document = document,
+      searchForm = _document.searchForm,
+      btnSubmit = searchForm.btnSubmit,
+      btnReset = searchForm.btnReset,
+      searchString = searchForm.searchString,
+      filterTitle = searchForm.filterTitle,
+      filterDate = searchForm.filterDate,
       getFilterParams = {
     "title": function title() {
       return "title=".concat(encodeURIComponent(filterTitle.value));
@@ -143,7 +144,7 @@ var getCompositions = function getCompositions(url) {
       return tagsString;
     }
   };
-  form.addEventListener("submit", function (event) {
+  searchForm.addEventListener("submit", function (event) {
     event.preventDefault();
     var url = "/api/compositions?\n            ".concat(searchString.value, "\n            &").concat(getFilterParams.title(), "\n            &").concat(getFilterParams.date(), "\n            &").concat(getFilterParams.tags());
     getCompositions(url);
@@ -158,11 +159,29 @@ var getCompositions = function getCompositions(url) {
     btnSubmit.classList.remove("hide");
   });
   btnReset.addEventListener("click", function () {
-    form.reset();
+    searchForm.reset();
     var url = "/api/compositions";
     getCompositions(url);
     btnReset.classList.remove("show");
     btnSubmit.classList.remove("hide");
+  });
+  var tagsBtn = searchForm.querySelector(".tag-btn"),
+      $allTags = document.querySelector(".all-tags .tags-list");
+  var modalCookie = modal({
+    "title": "Поиск по тегам",
+    "content": "<form name=\"tagsForm\">".concat($allTags.outerHTML, "\n        <div class=\"btns text-center\">\n        <button type=\"submit\" name=\"btnSubmit\">\u041F\u043E\u0438\u0441\u043A</button>\n        <button type=\"reset\" name=\"btnReset\" class=\"disagree\">\u0421\u0431\u0440\u043E\u0441\u0438\u0442\u044C</button>\n        </div></form>\n        "),
+    "class": "tags-popup",
+    "onBuild": function onBuild() {
+      var _document2 = document,
+          tagsForm = _document2.tagsForm,
+          tags = tagsForm["tags[]"]; // eslint-disable-next-line no-console
+
+      console.log(tags);
+    }
+  });
+  tagsBtn.addEventListener("click", function (event) {
+    event.preventDefault();
+    modalCookie.show();
   });
 })();
 /*
