@@ -14,8 +14,9 @@
                 <input type="hidden" name="filterTitle" value="asc">
                 <input type="hidden" name="filterTags" value="">
                 <input type="hidden" name="filterDate" value="asc">
+                <button class="tag-btn"><img src="./image/tag.svg"></button>
                 <label>
-                    <input type="text" name="searchString">
+                    <input type="text" name="searchString" autocomplete="false">
                     <span class="placeholder">Введите название</span>
                 </label>
                 <button name="btnReset" type="reset" class="search-reset">&times;</button>
@@ -27,16 +28,16 @@
         <div class="container">
             <div class="table">
                 <div class="table-head">
-                    <div class="table-head_cell table-head_cell-title filter-btn" data-filter="title">
-                        Название произведения
-                        <div class="icon filter-order" data-value="asc">
+                    <div class="table-head_cell table-head_cell-title" data-filter="title">
+                        <button class="filter-btn">Название произведения</button>
+                        <button class="icon filter-order" data-field="filterTitle" data-value="asc">
                             <img src={{ asset('/image/sort.svg') }} />
-                        </div>
+                        </button>
                     </div>
-                    <div class="table-head_cell table-head_cell-tags">Теги</div>
-                    <div class="table-head_cell table-head_cell-updated_at filter-btn" data-filter="date">Дата
-                        исполнения
-                        <div class="icon filter-order" data-value="asc"><img src={{ asset('/image/sort.svg') }} /></div>
+                    <div class="table-head_cell table-head_cell-tags"><button class="filter-btn">Теги</button></div>
+                    <div class="table-head_cell table-head_cell-updated_at filter-btn" data-filter="date">
+                        <button class="filter-btn">Дата исполнения</button>
+                        <button class="icon filter-order" data-value="asc"><img src={{ asset('/image/sort.svg') }} /></button>
                     </div>
                 </div>
                 <div class="table-body">
@@ -57,6 +58,11 @@
             </div>
         </div>
     </main>
+    <div class="all-tags">
+        <ul class="tags-list">
+            
+        </ul>
+    </div>
 @endsection
 
 @push('any-scripts')

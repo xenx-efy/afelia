@@ -36,6 +36,24 @@ header{
         flex-direction: row;
         max-width: 760px;
         margin: 0 auto;
+        .tag-btn{
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #0c89ec, #59e5ff);
+            box-shadow: 0px 0px 20px -9px #000;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 21px;
+            font-weight: bold;
+            margin-right: 10px;
+            img{
+                width: 25px;
+            }
+        }
         label{
             width: auto;
             margin-bottom: 0px;
@@ -111,10 +129,12 @@ header{
             flex-direction: column;
         }
         &_cell{
-            color: #fff;
-            font-weight: bold;
-            text-shadow: 1px 1px 0px #696969;
-            cursor: pointer;
+            .filter-btn{
+                color: #fff;
+                font-weight: bold;
+                text-shadow: 1px 1px 0px #696969;
+                cursor: pointer;
+            }
             @media screen and (max-width: 768px){
                 font-size: 14px;
             }
@@ -250,40 +270,3 @@ header{
         }
     }    
 }
-
-.modal-wrap {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background: hsla(0, 0%, 0%, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 111;
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.3s;
-    &.active{
-        opacity: 1;
-        visibility: visible;
-    }
-    .modal-content {
-        position: relative;
-        background: #fff;
-        padding: 20px;
-        border-radius: 20px;
-        max-width: 320px;
-        margin: 10px;
-        .tags-list_item {
-            cursor: pointer;
-            transition: 0.2s ease-in-out;
-            .active{
-                background: #2195ed;
-                color: #fff;
-            }
-        }
-    }
-}
-

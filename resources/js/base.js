@@ -1,12 +1,22 @@
 "use strict";
 
-const fieldValueLength = 0,
+const minValueLength = 0,
     formField = document.querySelectorAll("form label");
 
 formField.forEach((element) => {
 
     const field = element.querySelector("input"),
         label = element.querySelector(".placeholder");
+
+    window.addEventListener("load", () => {
+
+        if (field.value.length > minValueLength) {
+
+            label.classList.add("active");
+
+        }
+
+    });
 
     field.onfocus = function onfocus () {
 
@@ -16,7 +26,7 @@ formField.forEach((element) => {
 
     field.onblur = function onblur () {
 
-        if (field.value.length === fieldValueLength) {
+        if (field.value.length === minValueLength) {
 
             label.classList.remove("active");
 
@@ -73,52 +83,59 @@ window.requestDate = (url, proxy = "") => {
 
 };
 
-/*
- * Var sign_in = document.querySelector('#sign_in button');
- * sign_in.addEventListener('click', function (event) {
- *     event.preventDefault();
- *     authorisation();
- * });
- */
+window.modal = (param) => {
 
-/*
- * Function authorisation() {
- *     let form = document.getElementById('sign_in');
- *     let params = 'username=' + encodeURIComponent(form.name.value) +
- *         '&password=' + encodeURIComponent(form.instrument.value);
- *     requestDate('/api/login?' + params)
- *         .then(result => {
- *                 let json = JSON.parse(result.response);
- *                 if (json.error) {
- *                     if(!form.querySelector('.error')){
- *                         let errorText = document.createElement('span');
- *                         errorText.classList.add('error');
- *                         errorText.innerHTML = json.error;
- *                         form.append(errorText);
- *                         setTimeout(()=>{
- *                             errorText.classList.add('show');
- *                         }, 100)
- *                     }
- *                 } else {
- *                     if(form.querySelector('.error')){
- *                         form.querySelector('.error').classList.remove('show');
- *                     }
- *                     document.querySelector('.header').classList.add('hide');
- *                     document.querySelector('.content').classList.add('show');
- */
+    const createModal = () => {
 
-/*
- *                     If (json.length) {
- *                         generateTable(json);
- *                     }
- *                 }
- *             },
- *             error => {
- *                 console.log("Rejected: " + error);
- *             }
- *         )
- *         .catch(error => {
- *             console.log("Catch: " + error);
- *         })
- * };
- */
+        const html = `<div class="modal-window">
+            <button class="close-btn close"><img src="../image/close.svg"></button>
+                <div class="modal-window_content">
+                    ${param.content}
+                </div>
+            </div>`;
+        const modal = document.createElement("div"),
+            extraClasses = param.class || "";
+
+        modal.className = `modal hide ${extraClasses}`;
+        modal.insertAdjacentHTML("afterbegin", html);
+        document.body.appendChild(modal);
+
+        return modal;
+
+    };
+
+    const $modal = createModal(),
+        $modalClose = $modal.querySelector(".close");
+
+    const hide = () => {
+
+        if (!$modal.classList.contains("hide")) {
+
+            $modal.classList.add("hide");
+
+        }
+
+    };
+
+    $modalClose.addEventListener("click", hide);
+
+    if (typeof param.onBuild === "function") {
+
+        param.onBuild($modal);
+
+    }
+
+    return {
+        "show" () {
+
+            if ($modal.classList.contains("hide")) {
+
+                $modal.classList.remove("hide");
+
+            }
+
+        },
+        hide
+    };
+
+};
