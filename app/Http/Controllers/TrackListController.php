@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Composition;
 use App\Models\Tag;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -22,6 +21,13 @@ class TrackListController extends Controller
         $tags = Tag::get();
 
         return view('pages.track-list', compact('tracks', 'tags'));
+    }
+
+    public function tracks()
+    {
+       $tracks = Composition::with('tags')->paginate(50);
+
+       return response()->json(['status' => 'success', 'tracks' => $tracks]);
     }
 
     /**
@@ -48,6 +54,7 @@ class TrackListController extends Controller
         $trackTitle = $request->input('title');
 
         $searchResults = Composition::query()->where('title', 'like', '%' . $trackTitle . '%')
+            ->with('tags')
             ->paginate(50)
             ->appends('title', $trackTitle);
 
