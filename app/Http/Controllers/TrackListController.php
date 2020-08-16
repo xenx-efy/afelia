@@ -6,6 +6,7 @@ use App\Models\Composition;
 use App\Models\Tag;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TrackListController extends Controller
 {
@@ -24,16 +25,30 @@ class TrackListController extends Controller
 
     /**
      * Search tracks by title.
+     * @link https://www.notion.so/xenx/API-1542727d71214b798d7d2050729244c5#b0c30d95e94445d8bc81ec98872addfc
      *
      * @param Request $request
      * @return JsonResponse
      */
     public function searchByTitle(Request $request)
     {
+        $validator = Validator::make($request->all(),
+            ['title' => 'required|min:3'],
+            [
+                'title.required' => 'Название произведение не должно быть пустым.',
+                'title.min' => 'Название произведения не должно быть меньше трех символов.'
+            ]);
+
+        if ($validator->fails()) {
+            $errorMessages = $validator->getMessageBag()->getMessages();
+
+            return response()->json(['status' => 'error', 'messages' => $errorMessages], 400);
+        }
         $trackTitle = $request->input('title');
 
-        $searchResults = Composition::query()->where('title', 'like', $trackTitle)->paginate(50);
+        $searchResults = Composition::query()->where('title', 'like', '%' . $trackTitle . '%')->paginate(50);
+        $response = collect(['status' => 'success'])->merge($searchResults);
 
-        return response()->json($searchResults);
+        return response()->json($response, 200);
     }
 }
