@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Mappable;
 
 /**
  * Class Composition
@@ -42,6 +44,8 @@ class Composition extends Model
      * @var string[]
      */
     protected $fillable = ['title'];
+
+    protected $hidden = ['pivot'];
 
     /**
      * Data types fields in table

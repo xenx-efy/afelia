@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Composition;
 use App\Models\Tag;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class TrackListController extends Controller
 {
@@ -15,6 +18,11 @@ class TrackListController extends Controller
 //        $this->middleware('auth');
     }
 
+    /**
+     * Generate view with track and tags.
+     *
+     * @return View
+     */
     public function index()
     {
         $tracks = Composition::with('tags')->orderBy('title')->paginate(12);
@@ -25,9 +33,9 @@ class TrackListController extends Controller
 
     public function tracks()
     {
-       $tracks = Composition::with('tags')->paginate(50);
+        $tracks = Composition::with('tags')->paginate(50);
 
-       return response()->json(['status' => 'success', 'tracks' => $tracks]);
+        return response()->json(['status' => 'success', 'tracks' => $tracks]);
     }
 
     /**
@@ -63,12 +71,19 @@ class TrackListController extends Controller
         return response()->json($response, 200);
     }
 
+    /**
+     * Search tracks by tags ids.
+     * @link
+     * @param Request $request
+     * @return JsonResponse
+     *
+     */
     public function searchByTags(Request $request)
     {
         $validator = Validator::make($request->all(), ['tags.*' => 'required|numeric'],
             [
-                'tags.require' => 'Необходимо выбрать хоть один тег.',
-                'tags.numeric' => 'Необходимо чтобы теги были числами.'
+                'tags.*.require' => 'Необходимо выбрать хоть один тег.',
+                'tags.*.numeric' => 'Необходимо чтобы теги были числами.'
             ]);
 
         if ($validator->fails()) {
@@ -82,9 +97,9 @@ class TrackListController extends Controller
 
         $searchResults = Composition::whereHas('tags', function ($query) use ($tags) {
             $query->whereIn('id', $tags);
-        })->with('tags')->paginate(50);
+        })->with('tags')->paginate(2);
 
-        $response = collect(['status' => 'success', $searchResults]);
+        $response = collect(['status' => 'success'])->merge($searchResults);
 
         return response()->json($response, 200);
     }
