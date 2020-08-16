@@ -159,11 +159,16 @@ header .search button.hide {
   }
 }
 
-.table-head_cell .filter-btn {
+.table-head_cell {
   color: #fff;
   font-weight: bold;
   text-shadow: 1px 1px 0px #696969;
-  cursor: pointer;
+}
+
+.table-head_cell .filter-btn {
+  color: inherit;
+  font-weight: inherit;
+  text-shadow: inherit;
 }
 
 @media screen and (max-width: 768px) {

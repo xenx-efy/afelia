@@ -1,79 +1,81 @@
 "use strict";
 
-const getCompositions = (url) => {
-
-    requestDate(url).
-        then(
-            (result) => {
-
-                const json = JSON.parse(result.response);
-
-                if (json.length) {
-
-                    generateTable(json);
-
-                } else {
-
-                    clearTable();
-                    const error = document.createElement("div");
-
-                    error.classList.add("content-table_row", "content-table_row-error");
-                    error.innerHTML = "Таких произведений не найдено";
-                    document.querySelector(".content-table").append(error);
-
-                }
-
-            },
-            (error) => {
-
-                // eslint-disable-next-line no-console
-                console.log(`Rejected: ${error}`);
-
-            }
-        ).
-        catch((error) => {
-
-            // eslint-disable-next-line no-console
-            console.log(`Catch: ${error}`);
-
-        });
-
-};
-
 (() => {
 
     const {searchForm} = document,
-        {btnSubmit, btnReset, searchString, filterTitle, filterDate} = searchForm,
-        getFilterParams = {
+        {btnSubmit, btnReset, searchString} = searchForm,
+        tabelBody = document.querySelector(".table-body");
+    let compositionsArray = {};
 
-            "title": () => `title=${encodeURIComponent(filterTitle.value)}`,
-            "date": () => `date=${encodeURIComponent(filterDate.value)}`,
-            "tags": () => {
+    const generateTable = (data) => {
 
-                const tags = document.querySelectorAll("#tags-modal .tags-list_item.active"),
-                    tagsLength = tags.length;
-                let tagsString = "";
+        let rows = "";
 
-                tags.forEach((elem, i) => {
+        data.forEach((composition) => {
 
-                    // tagsString += 'tag[]=' + elem.innerHTML + (i !== (tagsLength - 1) ? '&' : '');
-                    tagsString = elem + tagsLength + i;
+            const {title = "", tags = "", last_played = ""} = composition;
 
-                });
+            rows += `<div class="table-row">
+                        <div class="table-row_cell table-row_cell-title">${title}</div>
+                            <div class="table-row_cell table-row_cell-tags">
+                                ${tags}
+                            </div>
+                    <div class="table-row_cell table-row_cell-date">${last_played}</div>
+                </div>`;
 
-                return tagsString;
+        });
 
-            }
-        };
+        tabelBody.innerHTML = rows;
+
+    };
+
+    const getCompositions = (url) => {
+
+        requestDate(url).
+            then(
+                (result) => {
+
+                    const json = JSON.parse(result.response);
+
+                    // eslint-disable-next-line no-console
+                    console.log(json);
+
+                    if (json.status === "success") {
+
+                        compositionsArray = json.data;
+                        generateTable(compositionsArray);
+
+                    } else {
+
+                        const row = "<div class='table-row table-row_error'>Таких произведений не найдено</div>";
+
+                        tabelBody.innerHTML = row;
+
+                    }
+
+                },
+                (error) => {
+
+                    // eslint-disable-next-line no-console
+                    console.log(`Rejected: ${error}`);
+
+                }
+            ).
+            catch((error) => {
+
+                // eslint-disable-next-line no-console
+                console.log(`Catch: ${error}`);
+
+            });
+
+    };
 
     searchForm.addEventListener("submit", (event) => {
 
         event.preventDefault();
-        const url = `/api/compositions?
-            ${searchString.value}
-            &${getFilterParams.title()}
-            &${getFilterParams.date()}
-            &${getFilterParams.tags()}`;
+
+        const url = `/async/search-by-title?
+            title=${searchString.value}`;
 
         getCompositions(url);
 
@@ -95,8 +97,7 @@ const getCompositions = (url) => {
 
     btnReset.addEventListener("click", () => {
 
-        searchForm.reset();
-        const url = "/api/compositions";
+        const url = "/async/search-by-title";
 
         getCompositions(url);
 

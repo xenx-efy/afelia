@@ -96,57 +96,54 @@
 "use strict";
 
 
-var getCompositions = function getCompositions(url) {
-  requestDate(url).then(function (result) {
-    var json = JSON.parse(result.response);
-
-    if (json.length) {
-      generateTable(json);
-    } else {
-      clearTable();
-      var error = document.createElement("div");
-      error.classList.add("content-table_row", "content-table_row-error");
-      error.innerHTML = "Таких произведений не найдено";
-      document.querySelector(".content-table").append(error);
-    }
-  }, function (error) {
-    // eslint-disable-next-line no-console
-    console.log("Rejected: ".concat(error));
-  })["catch"](function (error) {
-    // eslint-disable-next-line no-console
-    console.log("Catch: ".concat(error));
-  });
-};
-
 (function () {
   var _document = document,
       searchForm = _document.searchForm,
       btnSubmit = searchForm.btnSubmit,
       btnReset = searchForm.btnReset,
       searchString = searchForm.searchString,
-      filterTitle = searchForm.filterTitle,
-      filterDate = searchForm.filterDate,
-      getFilterParams = {
-    "title": function title() {
-      return "title=".concat(encodeURIComponent(filterTitle.value));
-    },
-    "date": function date() {
-      return "date=".concat(encodeURIComponent(filterDate.value));
-    },
-    "tags": function tags() {
-      var tags = document.querySelectorAll("#tags-modal .tags-list_item.active"),
-          tagsLength = tags.length;
-      var tagsString = "";
-      tags.forEach(function (elem, i) {
-        // tagsString += 'tag[]=' + elem.innerHTML + (i !== (tagsLength - 1) ? '&' : '');
-        tagsString = elem + tagsLength + i;
-      });
-      return tagsString;
-    }
+      tabelBody = document.querySelector(".table-body");
+  var compositionsArray = {};
+
+  var generateTable = function generateTable(data) {
+    var rows = "";
+    data.forEach(function (composition) {
+      var _composition$title = composition.title,
+          title = _composition$title === void 0 ? "" : _composition$title,
+          _composition$tags = composition.tags,
+          tags = _composition$tags === void 0 ? "" : _composition$tags,
+          _composition$last_pla = composition.last_played,
+          last_played = _composition$last_pla === void 0 ? "" : _composition$last_pla;
+      rows += "<div class=\"table-row\">\n                        <div class=\"table-row_cell table-row_cell-title\">".concat(title, "</div>\n                            <div class=\"table-row_cell table-row_cell-tags\">\n                                ").concat(tags, "\n                            </div>\n                    <div class=\"table-row_cell table-row_cell-date\">").concat(last_played, "</div>\n                </div>");
+    });
+    tabelBody.innerHTML = rows;
   };
+
+  var getCompositions = function getCompositions(url) {
+    requestDate(url).then(function (result) {
+      var json = JSON.parse(result.response); // eslint-disable-next-line no-console
+
+      console.log(json);
+
+      if (json.status === "success") {
+        compositionsArray = json.data;
+        generateTable(compositionsArray);
+      } else {
+        var row = "<div class='table-row table-row_error'>Таких произведений не найдено</div>";
+        tabelBody.innerHTML = row;
+      }
+    }, function (error) {
+      // eslint-disable-next-line no-console
+      console.log("Rejected: ".concat(error));
+    })["catch"](function (error) {
+      // eslint-disable-next-line no-console
+      console.log("Catch: ".concat(error));
+    });
+  };
+
   searchForm.addEventListener("submit", function (event) {
     event.preventDefault();
-    var url = "/api/compositions?\n            ".concat(searchString.value, "\n            &").concat(getFilterParams.title(), "\n            &").concat(getFilterParams.date(), "\n            &").concat(getFilterParams.tags());
+    var url = "/async/search-by-title?\n            title=".concat(searchString.value);
     getCompositions(url);
 
     if (searchString !== "") {
@@ -159,8 +156,7 @@ var getCompositions = function getCompositions(url) {
     btnSubmit.classList.remove("hide");
   });
   btnReset.addEventListener("click", function () {
-    searchForm.reset();
-    var url = "/api/compositions";
+    var url = "/async/search-by-title";
     getCompositions(url);
     btnReset.classList.remove("show");
     btnSubmit.classList.remove("hide");

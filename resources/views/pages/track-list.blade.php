@@ -28,14 +28,14 @@
             <div class="table">
                 <div class="table-head">
                     <div class="table-head_cell table-head_cell-title" data-filter="title">
-                        <button class="filter-btn">Название произведения</button>
+                        <button class="filter-btn disagree">Название произведения</button>
                         <button class="icon filter-order" data-field="filterTitle" data-value="asc">
                             <img src={{ asset('/image/sort.svg') }} />
                         </button>
                     </div>
-                    <div class="table-head_cell table-head_cell-tags"><button class="filter-btn">Теги</button></div>
+                    <div class="table-head_cell table-head_cell-tags">Теги</div>
                     <div class="table-head_cell table-head_cell-updated_at filter-btn" data-filter="date">
-                        <button class="filter-btn">Дата исполнения</button>
+                        <button class="filter-btn disagree">Дата исполнения</button>
                         <button class="icon filter-order" data-value="asc"><img src={{ asset('/image/sort.svg') }} /></button>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
         <ul class="tags-list">
            @foreach($tags as $tag)
                     <label>
-                        <input type="checkbox" name="tags[]" value="{{ $tag->title }}" class="hidden">
+                        <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="hidden">
                         <li class="tags-list_item">
                             {{ $tag->title }}
                         </li>
