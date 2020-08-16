@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Composition;
 use App\Models\Tag;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -46,8 +47,37 @@ class TrackListController extends Controller
         }
         $trackTitle = $request->input('title');
 
-        $searchResults = Composition::query()->where('title', 'like', '%' . $trackTitle . '%')->paginate(50);
+        $searchResults = Composition::query()->where('title', 'like', '%' . $trackTitle . '%')
+            ->paginate(50)
+            ->appends('title', $trackTitle);
+
         $response = collect(['status' => 'success'])->merge($searchResults);
+
+        return response()->json($response, 200);
+    }
+
+    public function searchByTags(Request $request)
+    {
+        $validator = Validator::make($request->all(), ['tags.*' => 'required|numeric'],
+            [
+                'tags.require' => 'Необходимо выбрать хоть один тег.',
+                'tags.numeric' => 'Необходимо чтобы теги были числами.'
+            ]);
+
+        if ($validator->fails()) {
+            $errorMessages = $validator->getMessageBag()->getMessages();
+
+            return response()->json(['status' => 'error', 'messages' => $errorMessages], 400);
+            // todo сделать вывод сообщений нормальным, сейчас "the tags 3 must be a number"
+        }
+
+        $tags = $request->input('tags');
+
+        $searchResults = Composition::whereHas('tags', function ($query) use ($tags) {
+            $query->whereIn('id', $tags);
+        })->with('tags')->paginate(50);
+
+        $response = collect(['status' => 'success', $searchResults]);
 
         return response()->json($response, 200);
     }
