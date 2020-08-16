@@ -312,7 +312,7 @@ var getCompositions = function getCompositions(url) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/admin/Documents/orchestra/afelia/resources/js/track.js */"./resources/js/track.js");
+module.exports = __webpack_require__(/*! /var/www/html/resources/js/track.js */"./resources/js/track.js");
 
 
 /***/ })

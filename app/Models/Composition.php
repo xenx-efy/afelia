@@ -22,12 +22,12 @@ class Composition extends Model
     /**
      * Then name of the "updated at" column.
      */
-    private const UPDATED_AT = 'last_played';
+    public const UPDATED_AT = 'last_played';
 
     /**
      * Turn off created_at column.
      */
-    private const CREATED_AT = null;
+    public const CREATED_AT = null;
 
     /**
      * The table associated with model.
@@ -48,7 +48,14 @@ class Composition extends Model
      *
      * @var array<string>
      */
-    protected $dates = ['last_played'];
+//    protected $dates = ['last_played'];
+
+    protected $dateFormat = 'd.m.Y';
+
+    public function getDateFormat()
+    {
+        return $this->dateFormat;
+    }
 
     /**
      * Relation with composer model.

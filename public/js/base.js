@@ -236,10 +236,10 @@ window.requestDate = function (url) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/admin/Documents/orchestra/afelia/resources/js/base.js */"./resources/js/base.js");
-__webpack_require__(/*! /Users/admin/Documents/orchestra/afelia/resources/sass/base.scss */"./resources/sass/base.scss");
-__webpack_require__(/*! /Users/admin/Documents/orchestra/afelia/resources/sass/login.scss */"./resources/sass/login.scss");
-module.exports = __webpack_require__(/*! /Users/admin/Documents/orchestra/afelia/resources/sass/tracks.scss */"./resources/sass/tracks.scss");
+__webpack_require__(/*! /var/www/html/resources/js/base.js */"./resources/js/base.js");
+__webpack_require__(/*! /var/www/html/resources/sass/base.scss */"./resources/sass/base.scss");
+__webpack_require__(/*! /var/www/html/resources/sass/login.scss */"./resources/sass/login.scss");
+module.exports = __webpack_require__(/*! /var/www/html/resources/sass/tracks.scss */"./resources/sass/tracks.scss");
 
 
 /***/ })
