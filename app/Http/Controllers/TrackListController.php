@@ -23,6 +23,13 @@ class TrackListController extends Controller
         return view('pages.track-list', compact('tracks', 'tags'));
     }
 
+    public function tracks()
+    {
+       $tracks = Composition::with('tags')->paginate(50);
+
+       return response()->json(['status' => 'success', 'tracks' => $tracks]);
+    }
+
     /**
      * Search tracks by title.
      * @link https://www.notion.so/xenx/API-1542727d71214b798d7d2050729244c5#b0c30d95e94445d8bc81ec98872addfc
@@ -46,8 +53,38 @@ class TrackListController extends Controller
         }
         $trackTitle = $request->input('title');
 
-        $searchResults = Composition::query()->where('title', 'like', '%' . $trackTitle . '%')->paginate(50);
+        $searchResults = Composition::query()->where('title', 'like', '%' . $trackTitle . '%')
+            ->with('tags')
+            ->paginate(50)
+            ->appends('title', $trackTitle);
+
         $response = collect(['status' => 'success'])->merge($searchResults);
+
+        return response()->json($response, 200);
+    }
+
+    public function searchByTags(Request $request)
+    {
+        $validator = Validator::make($request->all(), ['tags.*' => 'required|numeric'],
+            [
+                'tags.require' => 'Необходимо выбрать хоть один тег.',
+                'tags.numeric' => 'Необходимо чтобы теги были числами.'
+            ]);
+
+        if ($validator->fails()) {
+            $errorMessages = $validator->getMessageBag()->getMessages();
+
+            return response()->json(['status' => 'error', 'messages' => $errorMessages], 400);
+            // todo сделать вывод сообщений нормальным, сейчас "the tags 3 must be a number"
+        }
+
+        $tags = $request->input('tags');
+
+        $searchResults = Composition::whereHas('tags', function ($query) use ($tags) {
+            $query->whereIn('id', $tags);
+        })->with('tags')->paginate(50);
+
+        $response = collect(['status' => 'success', $searchResults]);
 
         return response()->json($response, 200);
     }
