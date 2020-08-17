@@ -129,24 +129,29 @@ window.modal = (param) => {
 
     };
 
+    const show = () => {
+
+        if ($modal.classList.contains("hide")) {
+
+            $modal.classList.remove("hide");
+
+        }
+
+    };
+
     $modalClose.addEventListener("click", hide);
 
     if (typeof param.onBuild === "function") {
 
-        param.onBuild($modal);
+        param.onBuild({
+            show,
+            hide
+        });
 
     }
 
     return {
-        "show" () {
-
-            if ($modal.classList.contains("hide")) {
-
-                $modal.classList.remove("hide");
-
-            }
-
-        },
+        show,
         hide
     };
 

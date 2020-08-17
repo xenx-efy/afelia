@@ -13,14 +13,25 @@
 
         data.forEach((composition) => {
 
-            const {title = "", tags = "", last_played = ""} = composition;
+            const {title = "", tags = []} = composition,
+                date = composition.last_played || "";
+            let tagsHtml = "<ul class='tags-list'>",
+                i = 0;
+            const {length} = tags;
+
+            for (i; i < length; i++) {
+
+                tagsHtml += `<li class="tags-list_item">${tags[i].title}</li>`;
+
+            }
+            tagsHtml += "</ul>";
 
             rows += `<div class="table-row">
                         <div class="table-row_cell table-row_cell-title">${title}</div>
                             <div class="table-row_cell table-row_cell-tags">
-                                ${tags}
+                                ${tagsHtml}
                             </div>
-                    <div class="table-row_cell table-row_cell-date">${last_played}</div>
+                    <div class="table-row_cell table-row_cell-date">${date}</div>
                 </div>`;
 
         });
@@ -109,7 +120,7 @@
     const tagsBtn = searchForm.querySelector(".tag-btn"),
         $allTags = document.querySelector(".all-tags .tags-list");
 
-    const modalCookie = modal({
+    const modalTags = modal({
         "title": "Поиск по тегам",
         "content": `<form name="tagsForm">${$allTags.outerHTML}
         <div class="btns text-center">
@@ -118,13 +129,38 @@
         </div></form>
         `,
         "class": "tags-popup",
-        "onBuild": () => {
+        "onBuild": (modal) => {
 
-            const {tagsForm} = document,
-                tags = tagsForm["tags[]"];
+            const {tagsForm} = document;
 
-            // eslint-disable-next-line no-console
-            console.log(tags);
+            tagsForm.addEventListener("submit", (event) => {
+                
+                event.preventDefault();
+
+                let url = "/async/search-by-tags?",
+                    i = 0;
+                const tags = tagsForm.querySelectorAll("input[type=checkbox]:checked"),
+                    tagsArray = Array.from(tags),
+                    {length} = tagsArray;
+
+                for (i; i < length; i++) {
+
+                    const conCut = i === 0 ? "" : "&";
+
+                    url += `${conCut}tags[]=${tagsArray[i].value}`;
+
+                }
+
+                // eslint-disable-next-line no-console
+                console.log(url);
+
+                getCompositions(url);
+
+                modal.hide();
+
+
+            });
+
 
         }
     });
@@ -132,7 +168,7 @@
     tagsBtn.addEventListener("click", (event) => {
 
         event.preventDefault();
-        modalCookie.show();
+        modalTags.show();
 
     });
 
