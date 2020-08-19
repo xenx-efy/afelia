@@ -12,6 +12,7 @@ Route::get('/track-list', [TrackListController::class, 'index'])->name('track-li
 Route::get('/', [TrackListController::class, 'index']);
 
 Route::prefix('async')->group(function () {
+    Route::get('/tracks', [TrackListController::class, 'tracks']);
     Route::get('/search-by-title', [TrackListController::class, 'searchByTitle']);
     Route::get('/search-by-tags', [TrackListController::class, 'searchByTags']);
 });

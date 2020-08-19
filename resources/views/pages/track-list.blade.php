@@ -33,10 +33,13 @@
                             <img src={{ asset('/image/sort.svg') }} />
                         </button>
                     </div>
-                    <div class="table-head_cell table-head_cell-tags"><button class="filter-btn">Теги</button></div>
+                    <div class="table-head_cell table-head_cell-tags">
+                        <button class="filter-btn">Теги</button>
+                    </div>
                     <div class="table-head_cell table-head_cell-updated_at filter-btn" data-filter="date">
                         <button class="filter-btn">Дата исполнения</button>
-                        <button class="icon filter-order" data-value="asc"><img src={{ asset('/image/sort.svg') }} /></button>
+                        <button class="icon filter-order" data-value="asc"><img src={{ asset('/image/sort.svg') }} />
+                        </button>
                     </div>
                 </div>
                 <div class="table-body">
@@ -50,7 +53,8 @@
                                     @endforeach
                                 </ul>
                             </div>
-                            <div class="table-row_cell table-row_cell-date">{{ $track->last_played }}</div>
+                            <div
+                                class="table-row_cell table-row_cell-date">{{ /*Date::now()->parse($track->last_played)->diffForHumans()*/  Date::parse($track->last_played)->format('d F Y') }}</div>
                         </div>
                     @endforeach
                 </div>
@@ -59,13 +63,13 @@
     </main>
     <div class="all-tags hidden">
         <ul class="tags-list">
-           @foreach($tags as $tag)
-                    <label>
-                        <input type="checkbox" name="tags[]" value="{{ $tag->title }}" class="hidden">
-                        <li class="tags-list_item">
-                            {{ $tag->title }}
-                        </li>
-                    </label>
+            @foreach($tags as $tag)
+                <label>
+                    <input type="checkbox" name="tags[]" value="{{ $tag->title }}" class="hidden">
+                    <li class="tags-list_item">
+                        {{ $tag->title }}
+                    </li>
+                </label>
             @endforeach
         </ul>
     </div>

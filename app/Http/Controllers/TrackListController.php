@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GetTracks;
+use App\Http\Requests\SearchByTags;
+use App\Http\Requests\SearchByTitle;
+use App\Http\Resources\CompositionCollection;
 use App\Models\Composition;
 use App\Models\Tag;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 class TrackListController extends Controller
 {
+    private const PAGINATE_COUNT = 50;
+
     public function __construct()
     {
-//        $this->middleware('auth');
+        $this->middleware('auth');
     }
 
     /**
@@ -25,82 +26,68 @@ class TrackListController extends Controller
      */
     public function index()
     {
-        $tracks = Composition::with('tags')->orderBy('title')->paginate(12);
+        $tracks = Composition::with('tags')->orderBy('title')->paginate(self::PAGINATE_COUNT);
         $tags = Tag::get();
 
         return view('pages.track-list', compact('tracks', 'tags'));
     }
 
-    public function tracks()
+    /**
+     * Get track list sorted by properties.
+     * @link https://www.notion.so/xenx/API-1542727d71214b798d7d2050729244c5#057f7de39f4d4dd488e53cd8ec74a8af
+     *
+     * @param GetTracks $request
+     * @return CompositionCollection
+     */
+    public function tracks(GetTracks $request)
     {
-        $tracks = Composition::with('tags')->paginate(50);
+        $query = Composition::with('tags')->with('composer');
 
-        return response()->json(['status' => 'success', 'tracks' => $tracks]);
+        if ($request->has(['sortBy', 'sortType'])){
+            $query->orderBy($request->sortBy, $request->sortType);
+        }
+
+        $tracks = $query->paginate(self::PAGINATE_COUNT);
+
+        return new CompositionCollection($tracks);
     }
 
     /**
      * Search tracks by title.
      * @link https://www.notion.so/xenx/API-1542727d71214b798d7d2050729244c5#b0c30d95e94445d8bc81ec98872addfc
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param SearchByTitle $request
+     * @return CompositionCollection
      */
-    public function searchByTitle(Request $request)
+    public function searchByTitle(SearchByTitle $request)
     {
-        $validator = Validator::make($request->all(),
-            ['title' => 'required|min:3'],
-            [
-                'title.required' => 'Название произведение не должно быть пустым.',
-                'title.min' => 'Название произведения не должно быть меньше трех символов.'
-            ]);
-
-        if ($validator->fails()) {
-            $errorMessages = $validator->getMessageBag()->getMessages();
-
-            return response()->json(['status' => 'error', 'messages' => $errorMessages], 400);
-        }
         $trackTitle = $request->input('title');
 
-        $searchResults = Composition::query()->where('title', 'like', '%' . $trackTitle . '%')
+        $tracks = Composition::query()
+            ->where('title', 'like', '%' . $trackTitle . '%')
             ->with('tags')
-            ->paginate(50)
+            ->with('composer')
+            ->paginate(self::PAGINATE_COUNT)
             ->appends('title', $trackTitle);
 
-        $response = collect(['status' => 'success'])->merge($searchResults);
-
-        return response()->json($response, 200);
+        return new CompositionCollection($tracks);
     }
 
     /**
-     * Search tracks by tags ids.
-     * @link
-     * @param Request $request
-     * @return JsonResponse
+     * Filter tracks by tags ids.
+     * @param SearchByTags $request
+     * @return CompositionCollection
      *
+     * @link
      */
-    public function searchByTags(Request $request)
+    public function searchByTags(SearchByTags $request)
     {
-        $validator = Validator::make($request->all(), ['tags.*' => 'required|numeric'],
-            [
-                'tags.*.require' => 'Необходимо выбрать хоть один тег.',
-                'tags.*.numeric' => 'Необходимо чтобы теги были числами.'
-            ]);
+        $tags = $request->tags;
 
-        if ($validator->fails()) {
-            $errorMessages = $validator->getMessageBag()->getMessages();
-
-            return response()->json(['status' => 'error', 'messages' => $errorMessages], 400);
-            // todo сделать вывод сообщений нормальным, сейчас "the tags 3 must be a number"
-        }
-
-        $tags = $request->input('tags');
-
-        $searchResults = Composition::whereHas('tags', function ($query) use ($tags) {
+        $tracks = Composition::whereHas('tags', function ($query) use ($tags) {
             $query->whereIn('id', $tags);
-        })->with('tags')->paginate(2);
+        })->with('tags')->with('composer')->paginate(self::PAGINATE_COUNT);
 
-        $response = collect(['status' => 'success'])->merge($searchResults);
-
-        return response()->json($response, 200);
+        return new CompositionCollection($tracks);
     }
 }

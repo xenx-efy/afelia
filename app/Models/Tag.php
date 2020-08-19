@@ -16,6 +16,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Tag extends Model
 {
 
+    /**
+     * Disable default timestamps in model.
+     *
+     * @var bool
+     */
     public $timestamps = false;
 
     /**
@@ -32,6 +37,11 @@ class Tag extends Model
      */
     protected $fillable = ['title'];
 
+    /**
+     * Hide properties for serialization.
+     *
+     * @var string[]
+     */
     protected $hidden = ['pivot'];
 
     /**
