@@ -15,7 +15,7 @@
                 <input type="hidden" name="filterDate" value="asc">
                 <button class="tag-btn"><img src="./image/tag.svg"></button>
                 <label>
-                    <input type="text" name="searchString" autocomplete="false">
+                    <input type="text" name="searchString" autocomplete="false" autofocus>
                     <span class="placeholder">Введите название</span>
                 </label>
                 <button name="btnReset" type="reset" class="search-reset">&times;</button>
@@ -56,6 +56,7 @@
                 </div>
             </div>
         </div>
+        <div class="errors-list"></div>
     </main>
     <div class="all-tags hidden">
         <ul class="tags-list">

@@ -56,6 +56,10 @@ window.requestDate = (url, proxy = "") => {
             proxy + url,
             true
         );
+        xhr.responseType = "json";
+
+        xhr.send();
+
         xhr.onload = function onload () {
 
             if (this.status === statusOk) {
@@ -72,12 +76,12 @@ window.requestDate = (url, proxy = "") => {
             }
 
         };
+
         xhr.onerror = function onerror () {
 
             reject(new Error("Network Error"));
 
         };
-        xhr.send();
 
     });
 
@@ -153,6 +157,86 @@ window.modal = (param) => {
     return {
         show,
         hide
+    };
+
+};
+
+window.message = (param = "") => {
+
+    const parent = document.querySelector(".errors-list");
+
+    if (!parent) {
+
+        return false;
+
+    }
+
+    const createMessage = () => {
+
+        const html = param.text;
+        const message = document.createElement("div");
+        const extraClasses = param.class || "";
+
+        message.className = `bottom-message hide ${extraClasses}`;
+        message.insertAdjacentHTML("afterbegin", html);
+        parent.appendChild(message);
+        // eslint-disable-next-line no-unused-expressions
+        // message.clientWidth;
+
+        return message;
+
+    };
+    const $message = createMessage();
+
+    const hide = () => {
+
+        if (!$message.classList.contains("hide")) {
+  
+            $message.classList.add("hide");
+  
+        }
+  
+    };
+
+    const destroy = () => {
+
+        $message.removeEventListener("click", hide);
+
+        if (!$message.classList.contains("hide")) {
+  
+            $message.classList.add("hide");
+
+            setTimeout(() => {
+
+                $message.remove();
+
+            }, 400);
+
+            return;
+  
+        }
+
+        $message.remove();
+  
+    };
+
+    setTimeout(destroy, 5000);
+
+    $message.addEventListener("click", hide);
+
+    return {
+
+        "show": () => {
+
+            if ($message.classList.contains("hide")) {
+
+                $message.classList.remove("hide");
+
+            }
+
+        },
+        hide
+
     };
 
 };

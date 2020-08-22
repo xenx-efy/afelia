@@ -131,6 +131,8 @@ window.requestDate = function (url) {
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", proxy + url, true);
+    xhr.responseType = "json";
+    xhr.send();
 
     xhr.onload = function onload() {
       if (this.status === statusOk) {
@@ -145,8 +147,6 @@ window.requestDate = function (url) {
     xhr.onerror = function onerror() {
       reject(new Error("Network Error"));
     };
-
-    xhr.send();
   });
 };
 
@@ -194,6 +194,60 @@ window.modal = function (param) {
 
   return {
     show: show,
+    hide: hide
+  };
+};
+
+window.message = function () {
+  var param = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+  var parent = document.querySelector(".errors-list");
+
+  if (!parent) {
+    return false;
+  }
+
+  var createMessage = function createMessage() {
+    var html = param.text;
+    var message = document.createElement("div");
+    var extraClasses = param["class"] || "";
+    message.className = "bottom-message hide ".concat(extraClasses);
+    message.insertAdjacentHTML("afterbegin", html);
+    parent.appendChild(message); // eslint-disable-next-line no-unused-expressions
+    // message.clientWidth;
+
+    return message;
+  };
+
+  var $message = createMessage();
+
+  var hide = function hide() {
+    if (!$message.classList.contains("hide")) {
+      $message.classList.add("hide");
+    }
+  };
+
+  var destroy = function destroy() {
+    $message.removeEventListener("click", hide);
+
+    if (!$message.classList.contains("hide")) {
+      $message.classList.add("hide");
+      setTimeout(function () {
+        $message.remove();
+      }, 400);
+      return;
+    }
+
+    $message.remove();
+  };
+
+  setTimeout(destroy, 5000);
+  $message.addEventListener("click", hide);
+  return {
+    "show": function show() {
+      if ($message.classList.contains("hide")) {
+        $message.classList.remove("hide");
+      }
+    },
     hide: hide
   };
 };
