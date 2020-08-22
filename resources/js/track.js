@@ -1,79 +1,92 @@
 "use strict";
 
-const getCompositions = (url) => {
-
-    requestDate(url).
-        then(
-            (result) => {
-
-                const json = JSON.parse(result.response);
-
-                if (json.length) {
-
-                    generateTable(json);
-
-                } else {
-
-                    clearTable();
-                    const error = document.createElement("div");
-
-                    error.classList.add("content-table_row", "content-table_row-error");
-                    error.innerHTML = "Таких произведений не найдено";
-                    document.querySelector(".content-table").append(error);
-
-                }
-
-            },
-            (error) => {
-
-                // eslint-disable-next-line no-console
-                console.log(`Rejected: ${error}`);
-
-            }
-        ).
-        catch((error) => {
-
-            // eslint-disable-next-line no-console
-            console.log(`Catch: ${error}`);
-
-        });
-
-};
-
 (() => {
 
     const {searchForm} = document,
-        {btnSubmit, btnReset, searchString, filterTitle, filterDate} = searchForm,
-        getFilterParams = {
+        {btnSubmit, btnReset, searchString} = searchForm,
+        tabelBody = document.querySelector(".table-body");
+    let compositionsArray = {};
 
-            "title": () => `title=${encodeURIComponent(filterTitle.value)}`,
-            "date": () => `date=${encodeURIComponent(filterDate.value)}`,
-            "tags": () => {
+    const generateTable = (data) => {
 
-                const tags = document.querySelectorAll("#tags-modal .tags-list_item.active"),
-                    tagsLength = tags.length;
-                let tagsString = "";
+        let rows = "";
 
-                tags.forEach((elem, i) => {
+        data.forEach((composition) => {
 
-                    // tagsString += 'tag[]=' + elem.innerHTML + (i !== (tagsLength - 1) ? '&' : '');
-                    tagsString = elem + tagsLength + i;
+            const {title = "", tags = []} = composition,
+                date = composition.last_played || "";
+            let tagsHtml = "<ul class='tags-list'>",
+                i = 0;
+            const {length} = tags;
 
-                });
+            for (i; i < length; i++) {
 
-                return tagsString;
+                tagsHtml += `<li class="tags-list_item">${tags[i].title}</li>`;
 
             }
-        };
+            tagsHtml += "</ul>";
+
+            rows += `<div class="table-row">
+                        <div class="table-row_cell table-row_cell-title">${title}</div>
+                            <div class="table-row_cell table-row_cell-tags">
+                                ${tagsHtml}
+                            </div>
+                    <div class="table-row_cell table-row_cell-date">${date}</div>
+                </div>`;
+
+        });
+
+        tabelBody.innerHTML = rows;
+
+    };
+
+    const getCompositions = (url) => {
+
+        requestDate(url).
+            then(
+                (result) => {
+
+                    const json = JSON.parse(result.response);
+
+                    // eslint-disable-next-line no-console
+                    console.log(json);
+
+                    if (json.status === "success") {
+
+                        compositionsArray = json.data;
+                        generateTable(compositionsArray);
+
+                    } else {
+
+                        const row = "<div class='table-row table-row_error'>Таких произведений не найдено</div>";
+
+                        tabelBody.innerHTML = row;
+
+                    }
+
+                },
+                (error) => {
+
+                    // eslint-disable-next-line no-console
+                    console.log(`Rejected: ${error}`);
+
+                }
+            ).
+            catch((error) => {
+
+                // eslint-disable-next-line no-console
+                console.log(`Catch: ${error}`);
+
+            });
+
+    };
 
     searchForm.addEventListener("submit", (event) => {
 
         event.preventDefault();
-        const url = `/api/compositions?
-            ${searchString.value}
-            &${getFilterParams.title()}
-            &${getFilterParams.date()}
-            &${getFilterParams.tags()}`;
+
+        const url = `/async/search-by-title?
+            title=${searchString.value}`;
 
         getCompositions(url);
 
@@ -95,8 +108,7 @@ const getCompositions = (url) => {
 
     btnReset.addEventListener("click", () => {
 
-        searchForm.reset();
-        const url = "/api/compositions";
+        const url = "/async/search-by-title";
 
         getCompositions(url);
 
@@ -108,7 +120,7 @@ const getCompositions = (url) => {
     const tagsBtn = searchForm.querySelector(".tag-btn"),
         $allTags = document.querySelector(".all-tags .tags-list");
 
-    const modalCookie = modal({
+    const modalTags = modal({
         "title": "Поиск по тегам",
         "content": `<form name="tagsForm">${$allTags.outerHTML}
         <div class="btns text-center">
@@ -117,13 +129,38 @@ const getCompositions = (url) => {
         </div></form>
         `,
         "class": "tags-popup",
-        "onBuild": () => {
+        "onBuild": (modal) => {
 
-            const {tagsForm} = document,
-                tags = tagsForm["tags[]"];
+            const {tagsForm} = document;
 
-            // eslint-disable-next-line no-console
-            console.log(tags);
+            tagsForm.addEventListener("submit", (event) => {
+                
+                event.preventDefault();
+
+                let url = "/async/search-by-tags?",
+                    i = 0;
+                const tags = tagsForm.querySelectorAll("input[type=checkbox]:checked"),
+                    tagsArray = Array.from(tags),
+                    {length} = tagsArray;
+
+                for (i; i < length; i++) {
+
+                    const conCut = i === 0 ? "" : "&";
+
+                    url += `${conCut}tags[]=${tagsArray[i].value}`;
+
+                }
+
+                // eslint-disable-next-line no-console
+                console.log(url);
+
+                getCompositions(url);
+
+                modal.hide();
+
+
+            });
+
 
         }
     });
@@ -131,7 +168,7 @@ const getCompositions = (url) => {
     tagsBtn.addEventListener("click", (event) => {
 
         event.preventDefault();
-        modalCookie.show();
+        modalTags.show();
 
     });
 
