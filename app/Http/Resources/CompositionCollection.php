@@ -16,6 +16,7 @@ class CompositionCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
+            'status' => 'success',
             'data' => CompositionResource::collection($this->collection),
         ];
     }

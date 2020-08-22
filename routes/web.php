@@ -7,13 +7,9 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes(['register' => false]);
 
-Route::get('/track-list', [TrackListController::class, 'index'])->name('track-list');
-
 Route::get('/', [TrackListController::class, 'index']);
 
 Route::prefix('async')->group(function () {
-    Route::get('/tracks', [TrackListController::class, 'tracks']);
-    Route::get('/search-by-title', [TrackListController::class, 'searchByTitle']);
-    Route::get('/search-by-tags', [TrackListController::class, 'searchByTags']);
+    Route::get('/tracks', [CompositionController::class, 'index']);
 });
 
