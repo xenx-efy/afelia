@@ -94,292 +94,288 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+ // DEFINE VARIABLES
 
+var _document = document,
+    searchForm = _document.searchForm,
+    btnSubmit = searchForm.btnSubmit,
+    btnReset = searchForm.btnReset,
+    searchString = searchForm.searchString,
+    tabelBody = document.querySelector(".table-body");
+var compositionsArray = {},
+    isLoadData = false;
+var tabelBodyHeight = {
+  "get": tabelBody.clientHeight,
+  "update": function update() {
+    this.get = tabelBody.clientHeight;
+  }
+};
+var windowHeight = window.outerHeight;
+window.addEventListener("load", function () {
+  tabelBodyHeight.update();
+});
+window.addEventListener("resize", function () {
+  windowHeight = window.outerHeight;
+  tabelBodyHeight.update();
+}); // DEFINE OBJECT TO GET PARAMETRS FOR SEARCH/SORT
 
-(function () {
-  var _document = document,
-      searchForm = _document.searchForm,
-      btnSubmit = searchForm.btnSubmit,
-      btnReset = searchForm.btnReset,
-      searchString = searchForm.searchString,
-      tabelBody = document.querySelector(".table-body");
-  var compositionsArray = {};
-  var getParams = {
-    "title": "",
-    "getTitle": function getTitle() {
-      return this.title.length ? "&title=".concat(this.title) : "";
-    },
-    "tags": [],
-    "getTags": function getTags() {
-      var arr = this.tags.map(function (tagVal) {
-        return "&tags[]=".concat(tagVal);
-      });
-      return arr.join("");
-    },
-    "sortBy": "",
-    "sortType": "",
-    "getSort": function getSort() {
-      if (this.sortBy === "" || this.sortType === "") {
-        return "";
-      }
-
-      return "&sortBy=".concat(this.sortBy, "&sortType=").concat(this.sortType);
+var getParams = {
+  "title": "",
+  "getTitle": function getTitle() {
+    return this.title.length ? "&title=".concat(this.title) : "";
+  },
+  "tags": [],
+  "getTags": function getTags() {
+    if (!this.tags.length) {
+      return "";
     }
-  };
 
-  var generateTable = function generateTable(data) {
-    var rows = "";
-    data.forEach(function (composition) {
-      var _composition$title = composition.title,
-          title = _composition$title === void 0 ? "" : _composition$title,
-          _composition$tags = composition.tags,
-          tags = _composition$tags === void 0 ? [] : _composition$tags,
-          _composition$lastPlay = composition.lastPlayed,
-          lastPlayed = _composition$lastPlay === void 0 ? "" : _composition$lastPlay;
-      var tagsHtml = "<ul class='tags-list'>",
-          i = 0;
-      var length = tags.length;
+    var arr = this.tags.map(function (tagVal) {
+      return "&tags[]=".concat(tagVal);
+    });
+    return arr.join("");
+  },
+  "sortBy": "",
+  "sortType": "",
+  "getSort": function getSort() {
+    if (this.sortBy === "" || this.sortType === "") {
+      return "";
+    }
 
-      for (i; i < length; i++) {
-        tagsHtml += "<li class=\"tags-list_item\">".concat(tags[i].title, "</li>");
+    return "&sortBy=".concat(this.sortBy, "&sortType=").concat(this.sortType);
+  },
+  "page": 1,
+  "maxPage": 2,
+  "nextPage": function nextPage() {
+    this.page = this.page < this.maxPage ? this.page + 1 : this.maxPage;
+  },
+  "getPage": function getPage() {
+    return "&page=".concat(this.page);
+  }
+}; // FUNCTION FOR RENDER TABLE ROW
+
+var generateTable = function generateTable(data, replace) {
+  var rows = new DocumentFragment();
+  data.forEach(function (composition) {
+    var _composition$title = composition.title,
+        title = _composition$title === void 0 ? "" : _composition$title,
+        _composition$tags = composition.tags,
+        tags = _composition$tags === void 0 ? [] : _composition$tags,
+        _composition$lastPlay = composition.lastPlayed,
+        lastPlayed = _composition$lastPlay === void 0 ? "" : _composition$lastPlay,
+        _composition$composer = composition.composer,
+        composer = _composition$composer === void 0 ? {} : _composition$composer;
+    var tagsHtml = "<ul class='tags-list'>",
+        i = 0;
+    var length = tags.length;
+
+    for (i; i < length; i++) {
+      tagsHtml += "<li class=\"tags-list_item\">".concat(tags[i].title, "</li>");
+    }
+
+    tagsHtml += "</ul>";
+    var row = document.createElement("div");
+    row.classList.add("table-row");
+    row.innerHTML = "<div class=\"table-row_cell table-row_cell-title\">\n                        <div class=\"author\">".concat(composer.composerName, "</div>\n                        ").concat(title, "\n                    </div>\n                    <div class=\"table-row_cell table-row_cell-tags\">\n                            ").concat(tagsHtml, "\n                    </div>\n                    <div class=\"table-row_cell table-row_cell-date\">").concat(lastPlayed, "</div>");
+    rows.appendChild(row);
+  });
+
+  if (replace) {
+    tabelBody.innerHTML = "";
+  }
+
+  tabelBody.appendChild(rows); // eslint-disable-next-line no-unused-expressions
+
+  tabelBody.offsetTop;
+  tabelBodyHeight.update();
+}; // MAIN FUNCTION TO GET COMPOSITIONS
+
+
+var getCompositions = function getCompositions() {
+  var param = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  param.replace = typeof param.replace === "undefined" ? true : param.replace;
+  var url = "/async/tracks?".concat(getParams.getTitle()).concat(getParams.getTags()).concat(getParams.getSort()).concat(getParams.getPage());
+  isLoadData = true;
+  requestData(url).then(function (result) {
+    var json = result.response; // eslint-disable-next-line no-console
+
+    console.log(json);
+
+    if (json.status === "success") {
+      if (!json.data.length) {
+        var row = "<div class='table-row table-row_error'>Таких произведений не найдено</div>";
+        tabelBody.innerHTML = row;
+        return;
       }
 
-      tagsHtml += "</ul>";
-      rows += "<div class=\"table-row\">\n                        <div class=\"table-row_cell table-row_cell-title\">".concat(title, "</div>\n                            <div class=\"table-row_cell table-row_cell-tags\">\n                                ").concat(tagsHtml, "\n                            </div>\n                    <div class=\"table-row_cell table-row_cell-date\">").concat(lastPlayed, "</div>\n                </div>");
-    });
-    tabelBody.innerHTML = rows;
-  };
+      compositionsArray = json.data;
+      generateTable(compositionsArray, param.replace);
+      getParams.page = json.meta.current_page;
+      getParams.maxPage = json.meta.last_page;
+      isLoadData = false;
+    } else {
+      // eslint-disable-next-line guard-for-in
+      for (var key in json.errors) {
+        var error = json.errors[key];
+        var length = error.length;
+        var i = 0;
 
-  var getCompositions = function getCompositions() {
-    var url = "/async/tracks?".concat(getParams.getTitle()).concat(getParams.getTags()).concat(getParams.getSort());
-    requestDate(url).then(function (result) {
-      var json = result.response; // eslint-disable-next-line no-console
-
-      console.log(json);
-
-      if (json.status === "success") {
-        if (!json.data.length) {
-          var row = "<div class='table-row table-row_error'>Таких произведений не найдено</div>";
-          tabelBody.innerHTML = row;
-          return;
-        }
-
-        compositionsArray = json.data;
-        generateTable(compositionsArray);
-      } else {
-        var delay = 0; // eslint-disable-next-line guard-for-in
-
-        for (var key in json.errors) {
-          var error = json.errors[key];
-          var length = error.length;
-          var i = 0;
-
-          var _loop = function _loop() {
-            var mess = message({
-              "text": error[i]
-            });
-            setTimeout(function () {
-              mess.show();
-            }, delay);
-          };
-
-          for (i; i < length; i++) {
-            _loop();
-          }
-
-          delay += 200;
+        for (i; i < length; i++) {
+          var mess = message({
+            "text": error[i]
+          });
+          mess.show();
         }
       }
-    }, function (error) {
-      // eslint-disable-next-line no-console
-      console.log("Rejected: ".concat(error));
-    });
-  };
 
-  searchForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-    getParams.title = searchString.value;
+      isLoadData = false;
+    }
+  }, function (error) {
+    // eslint-disable-next-line no-console
+    console.log("Rejected: ".concat(error));
+  });
+};
+
+searchForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+  getParams.title = searchString.value;
+  getParams.page = 1;
+  getCompositions();
+
+  if (searchString !== "") {
+    btnReset.classList.add("show");
+    btnSubmit.classList.add("hide");
+  }
+});
+searchString.addEventListener("input", function () {
+  btnSubmit.classList.remove("hide");
+});
+btnReset.addEventListener("click", function () {
+  getParams.title = "";
+  getParams.tags = [];
+  getParams.sortBy = "";
+  getCompositions();
+  btnReset.classList.remove("show");
+  btnSubmit.classList.remove("hide");
+});
+var tagsBtn = searchForm.querySelector(".tag-btn"),
+    $allTags = document.querySelector(".all-tags .tags-list");
+tagsBtn.addEventListener("focus", function () {
+  tagsBtn.blur();
+});
+var modalTags = modal({
+  "title": "Поиск по тегам",
+  "content": "<form name=\"tagsForm\">".concat($allTags.outerHTML, "\n<div class=\"btns text-center\">\n<button type=\"submit\" name=\"btnSubmit\">\u041F\u043E\u0438\u0441\u043A</button>\n<button type=\"reset\" name=\"btnReset\" class=\"disagree\">\u0421\u0431\u0440\u043E\u0441\u0438\u0442\u044C</button>\n</div></form>\n"),
+  "class": "tags-popup",
+  "onBuild": function onBuild(modal) {
+    var _document2 = document,
+        tagsForm = _document2.tagsForm;
+    tagsForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var tags = tagsForm.querySelectorAll("input[type=checkbox]:checked");
+      var tagsArray = Array.from(tags);
+      tagsArray = tagsArray.map(function (tag) {
+        return tag.value;
+      });
+      getParams.tags = tagsArray;
+      getParams.page = 1;
+      getCompositions();
+      modal.hide();
+    });
+  }
+});
+tagsBtn.addEventListener("click", function (event) {
+  event.preventDefault();
+  modalTags.show();
+});
+var sortByBtns = document.querySelectorAll(".sortBy");
+
+var _loop = function _loop(i, length) {
+  var btn = sortByBtns[i];
+  btn.addEventListener("click", function () {
+    btn.dataset.sortType = "";
+    getParams.sortBy = btn.dataset.sortBy;
+    getParams.sortType = btn.dataset.sortTypeDefault;
     getCompositions();
+  });
+};
 
-    if (searchString !== "") {
-      btnReset.classList.add("show");
-      btnSubmit.classList.add("hide");
+for (var i = 0, length = sortByBtns.length; i < length; i++) {
+  _loop(i, length);
+}
+
+var sortTypeBtns = document.querySelectorAll(".sortType");
+
+var _loop2 = function _loop2(_i, _length) {
+  var btn = sortTypeBtns[_i]; // eslint-disable-next-line no-loop-func
+
+  btn.addEventListener("click", function () {
+    var sortBy = document.querySelector(btn.dataset["for"]);
+
+    if (!sortBy) {
+      var error = message({
+        "text": "data-for не верный, попросите Лешу глянуть файл track.js в районе 262 строчки"
+      });
+      error.show();
+      return;
     }
+
+    var prevType = sortBy.dataset.sortType ? sortBy.dataset.sortType : sortBy.dataset.sortTypeDefault;
+    var newType = prevType === "desc" ? "asc" : "desc";
+    sortBy.dataset.sortType = newType;
+    getParams.sortBy = sortBy.dataset.sortBy;
+    getParams.sortType = newType;
+    getCompositions();
   });
-  searchString.addEventListener("input", function () {
-    // btnReset.classList.remove("show");
-    btnSubmit.classList.remove("hide");
-  });
-  btnReset.addEventListener("click", function () {
-    var url = "/async/search-by-title";
-    getCompositions(url);
-    btnReset.classList.remove("show");
-    btnSubmit.classList.remove("hide");
-  });
-  var tagsBtn = searchForm.querySelector(".tag-btn"),
-      $allTags = document.querySelector(".all-tags .tags-list");
-  var modalTags = modal({
-    "title": "Поиск по тегам",
-    "content": "<form name=\"tagsForm\">".concat($allTags.outerHTML, "\n        <div class=\"btns text-center\">\n        <button type=\"submit\" name=\"btnSubmit\">\u041F\u043E\u0438\u0441\u043A</button>\n        <button type=\"reset\" name=\"btnReset\" class=\"disagree\">\u0421\u0431\u0440\u043E\u0441\u0438\u0442\u044C</button>\n        </div></form>\n        "),
-    "class": "tags-popup",
-    "onBuild": function onBuild(modal) {
-      var _document2 = document,
-          tagsForm = _document2.tagsForm;
-      tagsForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-        var tags = tagsForm.querySelectorAll("input[type=checkbox]:checked");
-        var tagsArray = Array.from(tags);
-        tagsArray = tagsArray.map(function (tag) {
-          return tag.value;
-        });
-        getParams.tags = tagsArray;
-        getCompositions();
-        modal.hide();
+};
+
+for (var _i = 0, _length = sortTypeBtns.length; _i < _length; _i++) {
+  _loop2(_i, _length);
+}
+
+var paginate = function paginate() {
+  var lastKnownScrollPosition = 0;
+  var ticking = false;
+  var whenLoad = 0.6;
+
+  var getCoords = function getCoords(elem) {
+    var box = elem.getBoundingClientRect();
+    return {
+      "top": box.top + pageYOffset,
+      "left": box.left + pageXOffset
+    };
+  };
+
+  var tabelCoor = getCoords(tabelBody);
+
+  var doSomething = function doSomething(scrollPos) {
+    var endPoint = tabelCoor.top + tabelBodyHeight.get;
+    var currentEndPoint = scrollPos + windowHeight;
+    var makeLoad = currentEndPoint >= endPoint * whenLoad; // eslint-disable-next-line no-console
+    // console.log(currentEndPoint, endPoint * whenLoad);
+
+    if (makeLoad && !isLoadData && getParams.page < getParams.maxPage) {
+      getParams.nextPage();
+      getCompositions({
+        "replace": false
       });
     }
+  };
+
+  window.addEventListener("scroll", function () {
+    lastKnownScrollPosition = window.scrollY;
+
+    if (!ticking) {
+      window.requestAnimationFrame(function () {
+        doSomething(lastKnownScrollPosition);
+        ticking = false;
+      });
+      ticking = true;
+    }
   });
-  tagsBtn.addEventListener("click", function (event) {
-    event.preventDefault();
-    modalTags.show();
-  });
-})();
-/*
- * Var orderby_btn = document.querySelectorAll('.filter-order');
- * orderby_btn.forEach(element => {
- *     element.addEventListener('click', function(event){
- *         console.log(event.target);
- *         let attr = this.getAttribute('data-value');
- *         if(attr == 'asc'){
- *             this.setAttribute('data-value', 'desc');
- *             this.classList.add('reverse');
- *         }else{
- *             this.setAttribute('data-value', 'asc');
- *             this.classList.remove('reverse');
- *         }
- */
+};
 
-/*
- *     })
- * });
- */
-
-/*
- * Var filter_btn = document.querySelectorAll('.filter-btn');
- * filter_btn.forEach(element => {
- *     element.addEventListener('click', function () {
- *         let filter = this.getAttribute('data-filter');
- *         let url = '/api/compositions?' + getParams.search_s() + '&' + getParams[filter]() + '&' + getParams.tags();
- *         getCompositions(url);
- *     });
- * });
- */
-
-/*
- * Function generateTable(date) {
- *     let rows = new DocumentFragment()
- *         row_example = document.createElement('div');
- *     row_example.classList.add('content-table_row');
- */
-
-/*
- *     Let cell_example = document.createElement('div');
- *     cell_example.classList.add('content-table_row-cell');
- */
-
-/*
- *     Let tags = [],
- *         tags_modal = new DocumentFragment(),
- *         tags_modal_wrap = document.createElement('div'),
- *         tags_modal_content = document.createElement('div'),
- *         tags_ul_example = document.createElement('ul'),
- *         tags_li_example = document.createElement('li');
- */
-
-/*
- *         Tags_modal_wrap.id = 'tags-modal';
- *         tags_modal_wrap.classList.add('modal-wrap');
- *         tags_modal_content.classList.add('modal-content');
- *         tags_ul_example.classList.add('tags-list');
- *         tags_li_example.classList.add('tags-list_item');
- */
-
-/*
- *     Date.forEach(element => {
- *         let row = row_example.cloneNode(false);
- *         let needdate = ['title', 'tags', 'updated_at'];
- *         for(let i = 0; i < 3; i++){
- *             let cell = cell_example.cloneNode(false);
- *             cell.classList.add('content-table_row-cell-' + needdate[i]);
- *             if(needdate[i] == "tags"){
- *                 let ul = tags_ul_example.cloneNode(false);
- *                 element[needdate[i]].forEach(element=>{
- *                     let li = tags_li_example.cloneNode(false);
- *                     li.innerHTML = element.tag;
- *                     tags.push(element.tag);
- *                     ul.append(li);
- *                 })
- *                 cell.append(ul);
- *             }else{
- *                 cell.innerHTML = element[needdate[i]];
- *             }
- *             row.append(cell);
- *         }
- *         rows.append(row);
- *     });
- *     console.log(tags);
- *     tags = uniq(tags);
- *     let modal_tags_ul = tags_ul_example.cloneNode(false);
- *     tags.forEach(function(element){
- *         let li = tags_li_example.cloneNode(false);
- *         li.innerHTML = element;
- *         li.addEventListener('click', toggleTags);
- *         modal_tags_ul.append(li);
- *     })
- *     tags_modal_content.append(modal_tags_ul);
- *     tags_modal_wrap.append(tags_modal_content);
- *     tags_modal.append(tags_modal_wrap);
- *     document.querySelector('.app').append(tags_modal);
- *     let tags_modal_target = document.querySelector('.content-table_head-cell-tags');
- *     tags_modal_target.addEventListener('click', toggleModal.bind(null, 'tags-modal', 'on'));
- */
-
-/*
- *     Tags_modal = document.getElementById('tags-modal');
- *     tags_modal.addEventListener('click', function(event){
- *         if(event.target.classList.contains('modal-wrap')){
- *             toggleModal('tags-modal', 'off');
- *         }
- *     });
- */
-
-/*
- *     Console.log(tags);
- *     clearTable();
- *     document.querySelector('.content-table').append(rows);
- * };
- */
-
-/*
- * Function uniq(a) {
- *     let r = {};
- *     return a.filter(i=>r.hasOwnProperty(i)?!1:r[i]=!0)
- * }
- */
-
-/*
- * Function toggleTags(event){
- *     event.stopPropagation();
- *     this.classList.toggle('active');
- * }
- * function toggleModal(modalId, value){
- *     let modal = document.getElementById(modalId);
- *     if(value === 'on'){
- *         modal.classList.add('active');
- *     } else {
- *         modal.classList.remove('active');
- *     }
- * }
- */
+paginate();
 
 /***/ }),
 

@@ -60,11 +60,20 @@ button{
     &:hover{
         transform: scale(0.95) translateZ(1px);
     }
+    &.fake-btn{
+        color: inherit;
+        font-weight: inherit;
+        text-shadow: inherit
+    }
     &.disagree {
         transform: scale(1);
         &:hover{
             opacity: 0.8;
         }
+    }
+    &.disable{
+        opacity: 0.3;
+        pointer-events: none;
     }
 }
 input,button{
@@ -245,6 +254,7 @@ form{
         transform: scale(1);
         opacity: 1;
         cursor: pointer;
+        box-shadow: 0px 0px 25px -20px #000;
         transition: opacity 0.2s, transform 0.3s cubic-bezier(0.21, 0.29, 0.55, 1.57);
         &:hover{
             transform: scale(0.95);

@@ -3,7 +3,7 @@
 body {
   padding: 100px 0px;
   min-height: 100vh;
-  background: linear-gradient(45deg, #3dcdf7, transparent);
+  background: #3bc5f7;
   position: relative;
   z-index: 1;
 }
@@ -14,6 +14,7 @@ body {
   }
 }
 
+body:before,
 body:after {
   content: "";
   display: block;
@@ -22,10 +23,20 @@ body:after {
   left: 0;
   height: 100vh;
   width: 100%;
+  top: -70px;
+  padding-bottom: 70px;
+  transform: translateY(70px);
+  z-index: -1;
+}
+
+body:before {
+  background: linear-gradient(45deg, #3dcdf7, transparent);
+}
+
+body:after {
   background: url(/image/heaven-1.png) no-repeat;
   background-size: cover;
   background-position: center bottom;
-  z-index: -1;
 }
 
 header .section-title {
@@ -46,6 +57,13 @@ header .search {
   flex-direction: row;
   max-width: 760px;
   margin: 0 auto;
+}
+
+@media (max-width: 480px) {
+  header .search {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
 
 header .search .tag-btn {
@@ -75,6 +93,14 @@ header .search label {
   margin-right: 10px;
 }
 
+@media (max-width: 480px) {
+  header .search label {
+    margin-right: 0px;
+    margin-bottom: 10px;
+    order: -1;
+  }
+}
+
 header .search-reset {
   width: 0px;
   height: 0px;
@@ -87,10 +113,8 @@ header .search-reset {
   background: linear-gradient(45deg, #E91E63, #F44336);
   box-shadow: 0px 0px 20px -8px #000;
   margin-right: 10px;
-  cursor: pointer;
   transform: scale(0.5);
   opacity: 0;
-  transition: 0.2s ease-in-out;
 }
 
 header .search-reset.show {
@@ -100,6 +124,14 @@ header .search-reset.show {
   height: 50px;
   flex-shrink: 0;
   margin-right: 10px;
+}
+
+header .search-reset.show:hover {
+  transform: scale(0.95) translateZ(1px);
+}
+
+header .search-reset img {
+  width: 16px;
 }
 
 header .search button.hide {
@@ -112,8 +144,6 @@ header .search button.hide {
 
 @media screen and (max-width: 480px) {
   header .search button {
-    width: 85px;
-    padding: 0 20px;
     font-size: 14px;
   }
 }
@@ -149,7 +179,7 @@ header .search button.hide {
   align-items: center;
   margin-bottom: 5px;
   border-radius: 20px;
-  padding: 5px 20px;
+  padding: 5px 15px;
   width: 100%;
 }
 
@@ -163,12 +193,7 @@ header .search button.hide {
   color: #fff;
   font-weight: bold;
   text-shadow: 1px 1px 0px #696969;
-}
-
-.table-head_cell .filter-btn {
-  color: inherit;
-  font-weight: inherit;
-  text-shadow: inherit;
+  padding: 0 5px;
 }
 
 @media screen and (max-width: 768px) {
@@ -203,8 +228,8 @@ header .search button.hide {
 
 .table-head_cell-title {
   font-weight: bold;
-  width: 50%;
-  min-width: 260px;
+  width: 275px;
+  flex-shrink: 0;
 }
 
 @media screen and (max-width: 768px) {
@@ -221,7 +246,7 @@ header .search button.hide {
 }
 
 .table-head_cell-tags {
-  width: 25%;
+  flex-grow: 1;
   text-align: center;
 }
 
@@ -233,8 +258,8 @@ header .search button.hide {
 
 .table-head_cell-updated_at,
 .table-head_cell-date {
-  width: 25%;
-  min-width: 205px;
+  width: 220px;
+  flex-shrink: 0;
   text-align: right;
 }
 
@@ -253,6 +278,10 @@ header .search button.hide {
   }
 }
 
+.table-body {
+  width: 100%;
+}
+
 .table-row {
   display: flex;
   justify-content: space-between;
@@ -260,29 +289,26 @@ header .search button.hide {
   background: #fff;
   margin-bottom: 5px;
   border-radius: 20px;
-  padding: 15px 20px;
+  padding: 15px 15px;
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 768px) {
   .table-row {
     flex-direction: column;
-    width: calc(50% - 10px);
-    margin: 0 5px 10px;
   }
 }
 
-@media screen and (max-width: 480px) {
-  .table-row {
-    width: calc(100% - 10px);
-  }
+.table-row_cell {
+  padding: 0 5px;
 }
 
 .table-row_cell-title {
   font-weight: bold;
-  width: 50%;
+  width: 275px;
+  flex-shrink: 0;
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 768px) {
   .table-row_cell-title {
     width: 100%;
     text-align: center;
@@ -290,12 +316,18 @@ header .search button.hide {
   }
 }
 
+.table-row_cell-title .author {
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 1.4em;
+}
+
 .table-row_cell-tags {
-  width: 25%;
+  flex-grow: 1;
   text-align: center;
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 768px) {
   .table-row_cell-tags {
     width: 100%;
     margin-bottom: 10px;
@@ -304,12 +336,12 @@ header .search button.hide {
 
 .table-row_cell-updated_at,
 .table-row_cell-date {
-  width: 25%;
-  min-width: 205px;
+  width: 220px;
+  flex-shrink: 0;
   text-align: right;
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 768px) {
   .table-row_cell-updated_at,
   .table-row_cell-date {
     width: 100%;
@@ -369,7 +401,7 @@ header .search button.hide {
 }
 
 .tags-popup .tags-list_item:hover {
-  opacity: 0.5;
+  opacity: 0.7;
 }
 
 .tags-popup .tags-list_item.active {

@@ -43,7 +43,7 @@ formField.forEach((element) => {
  * @returns {Promise} Describe this pls
  */
 // eslint-disable-next-line no-unused-vars,require-jsdoc
-window.requestDate = (url, proxy = "") => {
+window.requestData = (url, proxy = "") => {
 
     const statusOk = 200;
 
@@ -56,6 +56,7 @@ window.requestDate = (url, proxy = "") => {
             proxy + url,
             true
         );
+        xhr.withCredentials = true;
         xhr.responseType = "json";
 
         xhr.send();
@@ -144,6 +145,18 @@ window.modal = (param) => {
     };
 
     $modalClose.addEventListener("click", hide);
+    document.addEventListener("keydown", (e) => {
+
+        // eslint-disable-next-line no-param-reassign
+        e = e || window.event;
+
+        if (e.keyCode === 27) {
+
+            hide();
+
+        }
+
+    });
 
     if (typeof param.onBuild === "function") {
 
@@ -187,6 +200,9 @@ window.message = (param = "") => {
 
     };
     const $message = createMessage();
+
+    // eslint-disable-next-line no-unused-expressions
+    $message.offsetTop;
 
     const hide = () => {
 
