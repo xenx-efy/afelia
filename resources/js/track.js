@@ -6,15 +6,44 @@
         {btnSubmit, btnReset, searchString} = searchForm,
         tabelBody = document.querySelector(".table-body");
     let compositionsArray = {};
+    const getParams = {
 
+        "title": "",
+        "getTitle": function getTitle () {
+
+            return this.title.length ? `&title=${this.title}` : "";
+
+        },
+        "tags": [],
+        "getTags": function getTags () {
+
+            const arr = this.tags.map((tagVal) => `&tags[]=${tagVal}`);
+
+            return arr.join("");
+            
+        },
+        "sortBy": "",
+        "sortType": "",
+        "getSort": function getSort () {
+
+            if (this.sortBy === "" || this.sortType === "") {
+
+                return ""; 
+
+            }
+
+            return `&sortBy=${this.sortBy}&sortType=${this.sortType}`;
+
+        }
+
+    };
     const generateTable = (data) => {
 
         let rows = "";
 
         data.forEach((composition) => {
 
-            const {title = "", tags = []} = composition,
-                date = composition.last_played || "";
+            const {title = "", tags = [], lastPlayed = ""} = composition;
             let tagsHtml = "<ul class='tags-list'>",
                 i = 0;
             const {length} = tags;
@@ -31,7 +60,7 @@
                             <div class="table-row_cell table-row_cell-tags">
                                 ${tagsHtml}
                             </div>
-                    <div class="table-row_cell table-row_cell-date">${date}</div>
+                    <div class="table-row_cell table-row_cell-date">${lastPlayed}</div>
                 </div>`;
 
         });
@@ -40,27 +69,64 @@
 
     };
 
-    const getCompositions = (url) => {
+    const getCompositions = () => {
+
+        const url = `/async/tracks?${getParams.getTitle()}${getParams.getTags()}${getParams.getSort()}`;
 
         requestDate(url).
             then(
                 (result) => {
 
-                    const json = JSON.parse(result.response);
+                    const json = result.response;
 
                     // eslint-disable-next-line no-console
                     console.log(json);
 
                     if (json.status === "success") {
 
+                        if (!json.data.length) {
+
+                            const row = "<div class='table-row table-row_error'>Таких произведений не найдено</div>";
+
+                            tabelBody.innerHTML = row;
+
+                            return;
+
+                        }
+
                         compositionsArray = json.data;
                         generateTable(compositionsArray);
 
                     } else {
 
-                        const row = "<div class='table-row table-row_error'>Таких произведений не найдено</div>";
+                        let delay = 0;
 
-                        tabelBody.innerHTML = row;
+                        // eslint-disable-next-line guard-for-in
+                        for (const key in json.errors) {
+
+                            const error = json.errors[key];
+                            const {length} = error;
+                            let i = 0;
+
+                            for (i; i < length; i++) {
+
+                                const mess = message({
+
+                                    "text": error[i]
+
+                                });
+
+                                setTimeout(() => {
+
+                                    mess.show();
+
+                                }, delay);
+
+                            }
+
+                            delay += 200;
+
+                        }
 
                     }
 
@@ -71,13 +137,7 @@
                     console.log(`Rejected: ${error}`);
 
                 }
-            ).
-            catch((error) => {
-
-                // eslint-disable-next-line no-console
-                console.log(`Catch: ${error}`);
-
-            });
+            );
 
     };
 
@@ -85,10 +145,9 @@
 
         event.preventDefault();
 
-        const url = `/async/search-by-title?
-            title=${searchString.value}`;
+        getParams.title = searchString.value;
 
-        getCompositions(url);
+        getCompositions();
 
         if (searchString !== "") {
 
@@ -137,24 +196,13 @@
                 
                 event.preventDefault();
 
-                let url = "/async/search-by-tags?",
-                    i = 0;
-                const tags = tagsForm.querySelectorAll("input[type=checkbox]:checked"),
-                    tagsArray = Array.from(tags),
-                    {length} = tagsArray;
+                const tags = tagsForm.querySelectorAll("input[type=checkbox]:checked");
+                let tagsArray = Array.from(tags);
+                
+                tagsArray = tagsArray.map((tag) => tag.value);
+                getParams.tags = tagsArray;
 
-                for (i; i < length; i++) {
-
-                    const conCut = i === 0 ? "" : "&";
-
-                    url += `${conCut}tags[]=${tagsArray[i].value}`;
-
-                }
-
-                // eslint-disable-next-line no-console
-                console.log(url);
-
-                getCompositions(url);
+                getCompositions();
 
                 modal.hide();
 

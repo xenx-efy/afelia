@@ -104,6 +104,28 @@
       searchString = searchForm.searchString,
       tabelBody = document.querySelector(".table-body");
   var compositionsArray = {};
+  var getParams = {
+    "title": "",
+    "getTitle": function getTitle() {
+      return this.title.length ? "&title=".concat(this.title) : "";
+    },
+    "tags": [],
+    "getTags": function getTags() {
+      var arr = this.tags.map(function (tagVal) {
+        return "&tags[]=".concat(tagVal);
+      });
+      return arr.join("");
+    },
+    "sortBy": "",
+    "sortType": "",
+    "getSort": function getSort() {
+      if (this.sortBy === "" || this.sortType === "") {
+        return "";
+      }
+
+      return "&sortBy=".concat(this.sortBy, "&sortType=").concat(this.sortType);
+    }
+  };
 
   var generateTable = function generateTable(data) {
     var rows = "";
@@ -112,7 +134,8 @@
           title = _composition$title === void 0 ? "" : _composition$title,
           _composition$tags = composition.tags,
           tags = _composition$tags === void 0 ? [] : _composition$tags,
-          date = composition.last_played || "";
+          _composition$lastPlay = composition.lastPlayed,
+          lastPlayed = _composition$lastPlay === void 0 ? "" : _composition$lastPlay;
       var tagsHtml = "<ul class='tags-list'>",
           i = 0;
       var length = tags.length;
@@ -122,37 +145,61 @@
       }
 
       tagsHtml += "</ul>";
-      rows += "<div class=\"table-row\">\n                        <div class=\"table-row_cell table-row_cell-title\">".concat(title, "</div>\n                            <div class=\"table-row_cell table-row_cell-tags\">\n                                ").concat(tagsHtml, "\n                            </div>\n                    <div class=\"table-row_cell table-row_cell-date\">").concat(date, "</div>\n                </div>");
+      rows += "<div class=\"table-row\">\n                        <div class=\"table-row_cell table-row_cell-title\">".concat(title, "</div>\n                            <div class=\"table-row_cell table-row_cell-tags\">\n                                ").concat(tagsHtml, "\n                            </div>\n                    <div class=\"table-row_cell table-row_cell-date\">").concat(lastPlayed, "</div>\n                </div>");
     });
     tabelBody.innerHTML = rows;
   };
 
-  var getCompositions = function getCompositions(url) {
+  var getCompositions = function getCompositions() {
+    var url = "/async/tracks?".concat(getParams.getTitle()).concat(getParams.getTags()).concat(getParams.getSort());
     requestDate(url).then(function (result) {
-      var json = JSON.parse(result.response); // eslint-disable-next-line no-console
+      var json = result.response; // eslint-disable-next-line no-console
 
       console.log(json);
 
       if (json.status === "success") {
+        if (!json.data.length) {
+          var row = "<div class='table-row table-row_error'>Таких произведений не найдено</div>";
+          tabelBody.innerHTML = row;
+          return;
+        }
+
         compositionsArray = json.data;
         generateTable(compositionsArray);
       } else {
-        var row = "<div class='table-row table-row_error'>Таких произведений не найдено</div>";
-        tabelBody.innerHTML = row;
+        var delay = 0; // eslint-disable-next-line guard-for-in
+
+        for (var key in json.errors) {
+          var error = json.errors[key];
+          var length = error.length;
+          var i = 0;
+
+          var _loop = function _loop() {
+            var mess = message({
+              "text": error[i]
+            });
+            setTimeout(function () {
+              mess.show();
+            }, delay);
+          };
+
+          for (i; i < length; i++) {
+            _loop();
+          }
+
+          delay += 200;
+        }
       }
     }, function (error) {
       // eslint-disable-next-line no-console
       console.log("Rejected: ".concat(error));
-    })["catch"](function (error) {
-      // eslint-disable-next-line no-console
-      console.log("Catch: ".concat(error));
     });
   };
 
   searchForm.addEventListener("submit", function (event) {
     event.preventDefault();
-    var url = "/async/search-by-title?\n            title=".concat(searchString.value);
-    getCompositions(url);
+    getParams.title = searchString.value;
+    getCompositions();
 
     if (searchString !== "") {
       btnReset.classList.add("show");
@@ -180,20 +227,13 @@
           tagsForm = _document2.tagsForm;
       tagsForm.addEventListener("submit", function (event) {
         event.preventDefault();
-        var url = "/async/search-by-tags?",
-            i = 0;
-        var tags = tagsForm.querySelectorAll("input[type=checkbox]:checked"),
-            tagsArray = Array.from(tags),
-            length = tagsArray.length;
-
-        for (i; i < length; i++) {
-          var conCut = i === 0 ? "" : "&";
-          url += "".concat(conCut, "tags[]=").concat(tagsArray[i].value);
-        } // eslint-disable-next-line no-console
-
-
-        console.log(url);
-        getCompositions(url);
+        var tags = tagsForm.querySelectorAll("input[type=checkbox]:checked");
+        var tagsArray = Array.from(tags);
+        tagsArray = tagsArray.map(function (tag) {
+          return tag.value;
+        });
+        getParams.tags = tagsArray;
+        getCompositions();
         modal.hide();
       });
     }

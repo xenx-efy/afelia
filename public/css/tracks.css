@@ -368,8 +368,11 @@ header .search button.hide {
   cursor: pointer;
 }
 
-.tags-popup .tags-list_item:hover,
-.tags-popup .tags-list_item .active {
+.tags-popup .tags-list_item:hover {
+  opacity: 0.5;
+}
+
+.tags-popup .tags-list_item.active {
   background: #2095ed;
   color: #fff;
 }
