@@ -2,15 +2,15 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class CompositionRequest extends FormRequest
+class GetCompositionsRequest extends FormRequest
 {
 
-    protected $redirect = false;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -18,7 +18,7 @@ class CompositionRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -31,17 +31,22 @@ class CompositionRequest extends FormRequest
         return [
             'sortBy' => [
                 Rule::in(['title', 'last_played']),
-                'required_with:sortType'
+                'required_with:sortType',
             ],
             'sortType' => [
                 Rule::in(['asc', 'desc']),
-                'required_with:sortBy'
+                'required_with:sortBy',
             ],
             'tags.*' => 'numeric',
             'title' => 'nullable|min:3',
         ];
     }
 
+    /**
+     * Custom messages for validation rules.
+     *
+     * @return array<string>
+     */
     public function messages()
     {
         return [
@@ -56,6 +61,20 @@ class CompositionRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json(['status' => 'error', 'errors' => $validator->errors()], 200));
+        throw new HttpResponseException(response()->json([
+            'status' => 'error',
+            'errors' => $validator->errors(),
+        ],
+            200));
+    }
+
+    /**
+     * Cancel default redirect and return 404 code.
+     *
+     * @throws AuthorizationException
+     */
+    protected function failedAuthorization()
+    {
+        throw new AuthorizationException("You need to be authorized.");
     }
 }

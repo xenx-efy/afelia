@@ -40,7 +40,7 @@ class Tag extends Model
     /**
      * Hide properties for serialization.
      *
-     * @var string[]
+     * @var array<string>
      */
     protected $hidden = ['pivot'];
 

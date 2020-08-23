@@ -11,5 +11,8 @@ Route::get('/', [TrackListController::class, 'index']);
 
 Route::prefix('async')->group(function () {
     Route::get('/tracks', [CompositionController::class, 'index']);
+    Route::post('/tracks', [CompositionController::class, 'create']);
+    Route::put('/tracks', [CompositionController::class, 'update']);
+    Route::delete('/tracks', [CompositionController::class, 'delete']);
 });
 

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * Class Composition
  *
  * @package App\Models
+ *
  * @property int $id Composition unique identifier.
  * @property Composer $composer Composer of this composition.
  * @property string $title Composition title.
@@ -39,13 +40,14 @@ class Composition extends Model
     /**
      * The attributes to allow with a mass assigment.
      *
-     * @var string[]
+     * @var array<string>
      */
-    protected $fillable = ['title'];
+    protected $fillable = ['title', 'composer_id'];
 
     /**
+     * Hide properties for serialization.
      *
-     * @var string[]
+     * @var array<string>
      */
     protected $hidden = ['pivot'];
 

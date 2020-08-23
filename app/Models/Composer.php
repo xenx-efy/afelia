@@ -7,14 +7,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Composer
+ *
  * @package App\Models
- * @property integer $id Unique identifier of Composer.
+ *
+ * @property int $id Unique identifier of Composer.
  * @property string $name Name fo Composer.
  */
 class Composer extends Model
 {
 
+    /**
+     * Disable timestamps in this model.
+     *
+     * @var bool
+     */
     public $timestamps = false;
+
     /**
      * The table associated with model.
      *
@@ -25,7 +33,7 @@ class Composer extends Model
     /**
      * Attributes should be mutated to dates.
      *
-     * @var string[]
+     * @var array<string>
      */
     protected $fillable = ['composer_name'];
 
