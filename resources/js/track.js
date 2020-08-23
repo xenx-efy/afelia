@@ -19,7 +19,7 @@
 
             const arr = this.tags.map((tagVal) => `&tags[]=${tagVal}`);
 
-            return arr.join();
+            return arr.join("");
             
         },
         "sortBy": "",
@@ -196,10 +196,10 @@
                 
                 event.preventDefault();
 
-                const tags = tagsForm.querySelectorAll("input[type=checkbox]:checked"),
-                    tagsArray = Array.from(tags);
+                const tags = tagsForm.querySelectorAll("input[type=checkbox]:checked");
+                let tagsArray = Array.from(tags);
                 
-                tagsArray.map((tag) => tag.value);
+                tagsArray = tagsArray.map((tag) => tag.value);
                 getParams.tags = tagsArray;
 
                 getCompositions();

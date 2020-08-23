@@ -114,7 +114,7 @@
       var arr = this.tags.map(function (tagVal) {
         return "&tags[]=".concat(tagVal);
       });
-      return arr.join();
+      return arr.join("");
     },
     "sortBy": "",
     "sortType": "",
@@ -227,9 +227,9 @@
           tagsForm = _document2.tagsForm;
       tagsForm.addEventListener("submit", function (event) {
         event.preventDefault();
-        var tags = tagsForm.querySelectorAll("input[type=checkbox]:checked"),
-            tagsArray = Array.from(tags);
-        tagsArray.map(function (tag) {
+        var tags = tagsForm.querySelectorAll("input[type=checkbox]:checked");
+        var tagsArray = Array.from(tags);
+        tagsArray = tagsArray.map(function (tag) {
           return tag.value;
         });
         getParams.tags = tagsArray;

@@ -285,7 +285,10 @@ header{
         }
         &_item{
             cursor: pointer;
-            &:hover, .active{
+            &:hover{
+                opacity: 0.5;
+            }
+            &.active{
                 background: #2095ed;
                 color: #fff;
             }
