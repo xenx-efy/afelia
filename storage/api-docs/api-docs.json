@@ -1,0 +1,54 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Tracks api",
+        "description": "Управление сущностями проекта трекера произведений.",
+        "contact": {
+            "email": "xenx.efy@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/async",
+            "description": "Main server"
+        }
+    ],
+    "paths": {
+        "/tracks": {
+            "get": {
+                "tags": [
+                    "composition"
+                ],
+                "summary": "Get all compositions with sorting",
+                "operationId": "getCompositions",
+                "responses": {
+                    "200": {
+                        "description": "Some response"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "composer",
+            "description": "Управление сущностью композитора"
+        },
+        {
+            "name": "composition",
+            "description": "Управление сущностью произведений"
+        },
+        {
+            "name": "tag",
+            "description": "Управление сущностью тегов"
+        }
+    ],
+    "security": [
+        []
+    ]
+}

@@ -13,6 +13,6 @@ class CompositionSeeder extends Seeder
      */
     public function run()
     {
-        factory(Composition::class, 1000)->create();
+        factory(Composition::class, 300)->create();
     }
 }

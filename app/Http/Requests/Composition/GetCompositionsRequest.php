@@ -1,26 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Composition;
 
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\BaseRequest;
 use Illuminate\Validation\Rule;
 
-class GetCompositionsRequest extends FormRequest
+class GetCompositionsRequest extends BaseRequest
 {
-
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return false;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -57,24 +43,5 @@ class GetCompositionsRequest extends FormRequest
             'tags.*.numeric' => 'Необходимо чтобы теги были числами.',
             'title.min' => 'Название произведения не должно быть меньше трех символов.',
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'status' => 'error',
-            'errors' => $validator->errors(),
-        ],
-            200));
-    }
-
-    /**
-     * Cancel default redirect and return 404 code.
-     *
-     * @throws AuthorizationException
-     */
-    protected function failedAuthorization()
-    {
-        throw new AuthorizationException("You need to be authorized.");
     }
 }

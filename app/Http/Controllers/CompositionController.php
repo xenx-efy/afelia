@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateCompositionRequest;
-use App\Http\Requests\DeleteCompositionRequest;
-use App\Http\Requests\GetCompositionsRequest;
-use App\Http\Requests\UpdateCompositionRequest;
+use App\Http\Requests\Composition\StoreCompositionRequest;
+use App\Http\Requests\Composition\DeleteCompositionRequest;
+use App\Http\Requests\Composition\GetCompositionsRequest;
+use App\Http\Requests\Composition\UpdateCompositionRequest;
 use App\Http\Resources\CompositionCollection;
+use App\Http\Resources\CompositionResource;
 use App\Models\Composition;
 
 class CompositionController extends Controller
@@ -23,6 +24,17 @@ class CompositionController extends Controller
     /**
      * Return composition data with filters and pagination.
      *
+     * @OA\Get(
+     *     path="/tracks",
+     *     tags={"composition"},
+     *     operationId="getCompositions",
+     *     summary="Get all compositions with sorting",
+     *     @OA\Response(
+     *          response=200,
+     *          description="Some response"
+     *      ),
+     * )
+     *
      * @link https://www.notion.so/xenx/API-1542727d71214b798d7d2050729244c5#057f7de39f4d4dd488e53cd8ec74a8af
      *
      * @param GetCompositionsRequest $request
@@ -38,8 +50,12 @@ class CompositionController extends Controller
         }
 
         if ($request->has('title')) {
-            $tracks = $query->where('title', 'like', '%' . $request->title . '%')
-                ->paginate(self::PAGINATE_COUNT)->appends('title', $request->title);
+            $title = $request->title;
+            $tracks = $query->where('title', 'like', '%' . $title . '%')
+                ->orWhereHas('composer', function ($query) use ($title) {
+                    $query->where('composer_name', 'like', '%' . $title . '%');
+                })
+                ->paginate(self::PAGINATE_COUNT)->appends('title', $title);
         } elseif ($request->has('tags')) {
             $tags = $request->tags;
             $tracks = $query->whereHas('tags', function ($query) use ($tags) {
@@ -52,7 +68,7 @@ class CompositionController extends Controller
         return new CompositionCollection($tracks);
     }
 
-    public function create(CreateCompositionRequest $request)
+    public function store(StoreCompositionRequest $request)
     {
         /** @var Composition $track */
         $track = Composition::create([
@@ -66,7 +82,7 @@ class CompositionController extends Controller
             $track->save();
         }
 
-        return response('', 201);
+        return (new CompositionResource($track))->additional(['status' => 'success']);
     }
 
     public function update(UpdateCompositionRequest $request)

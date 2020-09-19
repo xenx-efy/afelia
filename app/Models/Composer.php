@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id Unique identifier of Composer.
  * @property string $name Name fo Composer.
+ * @method static get()
  */
 class Composer extends Model
 {

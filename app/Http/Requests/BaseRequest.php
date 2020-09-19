@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class DeleteCompositionRequest extends FormRequest
+class BaseRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,25 +19,6 @@ class DeleteCompositionRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
-    {
-        return [
-            'trackId' => 'required|numeric',
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'trackId.required' => 'Поле trackId обязательно',
-            'trackId.numeric' => 'Поле trackId должно быть числового типа.'
-        ];
-    }
 
     /**
      * Overriding the standard validation error handling.

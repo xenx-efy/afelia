@@ -15,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
  * @property string $name User name
  * @property string $email User email
  * @property string $password User password
- * @property bool $isAdmin Attribute indicating whether this user is an administrator.
+ * @property bool $is_admin Attribute indicating whether this user is an administrator.
  * @property Carbon $createdAt Date of creating this user.
  * @property Carbon $updatedAt Date of updating info about this user.
  *
@@ -53,15 +53,8 @@ class User extends Authenticatable
         'is_admin' => 'boolean',
     ];
 
-    /**
-     * Map the table columns names with models magic properties,
-     * $model->createdAt for example
-     *
-     * @var array<string>
-     */
-    protected $maps = [
-        'created_at' => 'createdAt',
-        'updated_at' => 'updatedAt',
-        'is_admin' => 'isAdmin',
-    ];
+    public function isAdmin()
+    {
+        return $this->is_admin;
+    }
 }
