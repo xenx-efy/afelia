@@ -125,12 +125,13 @@ formField.forEach(function (element) {
  */
 // eslint-disable-next-line no-unused-vars,require-jsdoc
 
-window.requestDate = function (url) {
+window.requestData = function (url) {
   var proxy = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
   var statusOk = 200;
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", proxy + url, true);
+    xhr.withCredentials = true;
     xhr.responseType = "json";
     xhr.send();
 
@@ -184,6 +185,14 @@ window.modal = function (param) {
   };
 
   $modalClose.addEventListener("click", hide);
+  document.addEventListener("keydown", function (e) {
+    // eslint-disable-next-line no-param-reassign
+    e = e || window.event;
+
+    if (e.keyCode === 27) {
+      hide();
+    }
+  });
 
   if (typeof param.onBuild === "function") {
     param.onBuild({
@@ -218,7 +227,9 @@ window.message = function () {
     return message;
   };
 
-  var $message = createMessage();
+  var $message = createMessage(); // eslint-disable-next-line no-unused-expressions
+
+  $message.offsetTop;
 
   var hide = function hide() {
     if (!$message.classList.contains("hide")) {

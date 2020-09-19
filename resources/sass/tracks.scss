@@ -1,13 +1,13 @@
 body{
     padding: 100px 0px;
     min-height: 100vh;
-    background: linear-gradient(45deg, #3dcdf7, transparent);
+    background: #3bc5f7;
     position: relative;
     z-index: 1;
     @media screen and (max-width: 768px){
         padding: 60px 0px;
     }
-    &:after{
+    &:before, &:after{
         content: "";
         display: block;
         position: fixed;
@@ -15,10 +15,18 @@ body{
         left: 0;
         height: 100vh;
         width: 100%;
+        top: -70px;
+	    padding-bottom: 70px;
+	    transform: translateY(70px);
+        z-index: -1;
+    }
+    &:before{
+        background: linear-gradient(45deg, #3dcdf7, transparent);
+    }
+    &:after{
         background: url(/image/heaven-1.png) no-repeat;
         background-size: cover;
         background-position: center bottom;
-        z-index: -1;
     }
 }
 header{
@@ -36,6 +44,10 @@ header{
         flex-direction: row;
         max-width: 760px;
         margin: 0 auto;
+        @media (max-width: 480px){
+            flex-wrap: wrap;
+            justify-content: center;
+        }
         .tag-btn{
             width: 50px;
             height: 50px;
@@ -59,6 +71,11 @@ header{
             margin-bottom: 0px;
             flex-grow: 1;
             margin-right: 10px;
+            @media (max-width: 480px){
+                margin-right: 0px;
+                margin-bottom: 10px;
+                order: -1;
+            }
         }
         &-reset {
             width: 0px;
@@ -72,10 +89,8 @@ header{
             background: linear-gradient(45deg, #E91E63, #F44336);
             box-shadow: 0px 0px 20px -8px #000;
             margin-right: 10px;
-            cursor: pointer;
             transform: scale(0.5);
             opacity: 0;
-            transition: 0.2s ease-in-out;
             &.show {
                 transform: scale(1);
                 opacity: 1;
@@ -83,6 +98,12 @@ header{
                 height: 50px;
                 flex-shrink: 0;
                 margin-right: 10px;
+                &:hover{
+                    transform: scale(0.95) translateZ(1px);
+                }
+            }
+            & img {
+                width: 16px;
             }
         }
         button{
@@ -94,9 +115,7 @@ header{
                 overflow: hidden;
             }
             @media screen and (max-width: 480px){
-                    width: 85px;
-                    padding: 0 20px;
-                    font-size: 14px;
+                font-size: 14px;
             }
         }
     }
@@ -123,7 +142,7 @@ header{
         align-items: center;
         margin-bottom: 5px;
         border-radius: 20px;
-        padding: 5px 20px;
+        padding: 5px 15px;
         width: 100%;
         @media screen and (max-width: 560px){
             flex-direction: column;
@@ -132,11 +151,7 @@ header{
             color: #fff;
             font-weight: bold;
             text-shadow: 1px 1px 0px #696969;
-            .filter-btn{
-                color: inherit;
-                font-weight: inherit;
-                text-shadow: inherit
-            }
+            padding: 0 5px;
             @media screen and (max-width: 768px){
                 font-size: 14px;
             }
@@ -161,8 +176,8 @@ header{
             }
             &-title{
                 font-weight: bold;
-                width: 50%;
-                min-width: 260px;
+                width: 275px;
+                flex-shrink: 0;
                 @media screen and (max-width: 768px){
                     min-width: 235px;
                 }
@@ -172,7 +187,7 @@ header{
                 }
             }
             &-tags {
-                width: 25%;
+                flex-grow: 1;
                 text-align: center;
                 @media screen and (max-width: 560px){
                     width: 100%;
@@ -180,8 +195,8 @@ header{
             }
             &-updated_at,
             &-date{
-                width: 25%;
-                min-width: 205px;
+                width: 220px;
+                flex-shrink: 0;
                 text-align: right;
                 @media screen and (max-width: 768px){
                     min-width: 190px;
@@ -195,7 +210,7 @@ header{
         }
     }
     &-body{
-        
+        width: 100%;
     }
     &-row{
         display: flex;
@@ -204,39 +219,41 @@ header{
         background: #fff;
         margin-bottom: 5px;
         border-radius: 20px;
-        padding: 15px 20px;
-        @media screen and (max-width: 980px){
+        padding: 15px 15px;
+        @media screen and (max-width: 768px){
             flex-direction: column;
-            width: calc(50% - 10px);
-            margin: 0 5px 10px;
-        }
-        @media screen and (max-width: 480px){
-            width: calc(100% - 10px);
         }
         &_cell{
+            padding: 0 5px;
             &-title{
                 font-weight: bold;
-                width: 50%;
-                @media screen and (max-width: 980px){
+                width: 275px;
+                flex-shrink: 0;
+                @media screen and (max-width: 768px){
                     width: 100%;
                     text-align: center;
                     margin-bottom: 10px;
                 }
+                .author {
+                    font-weight: 300;
+                    font-size: 12px;
+                    line-height: 1.4em;
+                }
             }
             &-tags {
-                width: 25%;
+                flex-grow: 1;
                 text-align: center;
-                @media screen and (max-width: 980px){
+                @media screen and (max-width: 768px){
                     width: 100%;
                     margin-bottom: 10px;
                 }
             }
             &-updated_at,
             &-date{
-                width: 25%;
-                min-width: 205px;
+                width: 220px;
+                flex-shrink: 0;
                 text-align: right;
-                @media screen and (max-width: 980px){
+                @media screen and (max-width: 768px){
                     width: 100%;
                     order: 2;
                     text-align: center;
@@ -286,7 +303,7 @@ header{
         &_item{
             cursor: pointer;
             &:hover{
-                opacity: 0.5;
+                opacity: 0.7;
             }
             &.active{
                 background: #2095ed;
