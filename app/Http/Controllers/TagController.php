@@ -2,22 +2,76 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Tag\DeleteTagRequest;
 use App\Http\Requests\Tag\StoreTagRequest;
 use App\Http\Requests\Tag\UpdateTagRequest;
 use App\Http\Resources\TagCollection;
 use App\Http\Resources\TagResource;
 use App\Models\Tag;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class TagController extends Controller
 {
-
-    public function index()
+    /**
+     * Returns all tags.
+     *
+     * @OA\Get(
+     *     path="/tags",
+     *     tags={"Tag"},
+     *     operationId="getTags",
+     *     summary="Получение тегов.",
+     *     @OA\Response(
+     *          response=200,
+     *          description="Success response"
+     *      ),
+     * )
+     *
+     * @return TagCollection
+     */
+    public function index(): TagCollection
     {
         return new TagCollection(Tag::get());
     }
 
-    public function store(StoreTagRequest $request)
+
+    /**
+     * Save tag to db
+     *
+     * @OA\Post(
+     *     path="/tags",
+     *     tags={"Tag"},
+     *     operationId="storeTag",
+     *     summary="Создает тег.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     description="Название тега",
+     *                     property="title",
+     *                     type="string",
+     *                     example="Smooth",
+     *                 ),
+     *                 required={"title"},
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Success response"
+     *      ),
+     *     @OA\Response(
+     *          response=201,
+     *          description="Success creation"
+     *      ),
+     * )
+     * @param StoreTagRequest $request
+     *
+     * @return TagResource
+     */
+    public function store(StoreTagRequest $request): TagResource
     {
         $tag = Tag::create([
             'title' => $request->title
@@ -26,9 +80,55 @@ class TagController extends Controller
         return (new TagResource($tag))->additional(['status' => 'success']);
     }
 
-    public function update(UpdateTagRequest $request)
+
+    /**
+     * Update tag
+     *
+     * @OA\Put(
+     *     path="/tags/{id}",
+     *     tags={"Tag"},
+     *     operationId="updateTag",
+     *     summary="Обновляет информацию о теге.",
+     *     @OA\Parameter(
+     *         description="Id обновляемого тега",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *           type="integer",
+     *         ),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Формат входящих данных",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     description="Название тега",
+     *                     property="title",
+     *                     type="string",
+     *                     example="Adazio",
+     *                 ),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success response"
+     *     ),
+     * )
+     *
+     * @param $id
+     * @param UpdateTagRequest $request
+     *
+     * @return Response
+     */
+    public function update($id, UpdateTagRequest $request): Response
     {
-        $tag = Tag::find($request->tagId);
+        $tagId = (int)$id;
+
+        $tag = Tag::find($tagId);
 
         $tag->title = $request->title;
 
@@ -37,18 +137,48 @@ class TagController extends Controller
         return response(['status' => 'success'], 200);
     }
 
-    public function delete(DeleteTagRequest $request)
+
+    /**
+     * Delete tag
+     *
+     * @OA\Delete(
+     *     path="/tags/{id}",
+     *     tags={"Tag"},
+     *     operationId="deleteTag",
+     *     summary="Удалить тег.",
+     *     @OA\Parameter(
+     *         description="Id удаляемого тега.",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *           type="integer",
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success response"
+     *     ),
+     * )
+     *
+     * @param $id
+     *
+     * @return JsonResponse
+     */
+    public function delete($id): JsonResponse
     {
+        $tagId = (int)$id;
+
         /** @var Tag $tag */
-        $tag = Tag::find($request->tagId);
+        $tag = Tag::find($tagId);
         try {
             $tag->delete();
-        } catch (\Exception $e) {
+        } catch (Exception $exception) {
             return response()->json(['status' => 'error', 'errors' => [
-                'message' => 'Ошибка удаления тега.',
+                'message' => 'Ошибка удаления тега.'
             ]]);
         }
 
-        return response(['status' => 'success'], 200);
+        return response()->json(['status' => 'success']);
     }
 }

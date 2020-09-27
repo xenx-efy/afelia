@@ -20,6 +20,8 @@ use Illuminate\Notifications\Notifiable;
  * @property Carbon $updatedAt Date of updating info about this user.
  *
  * @method static create(array $array)
+ * @method static get()
+ * @method static find($id)
  */
 class User extends Authenticatable
 {

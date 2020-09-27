@@ -22,6 +22,8 @@ mix.webpackConfig({
     }
 });
 
+mix.sourceMaps();
+
 mix.js(
     "resources/js/base.js",
     "public/js"

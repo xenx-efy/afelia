@@ -15,7 +15,7 @@ class StoreComposerRequest extends BaseRequest
     public function rules()
     {
         return [
-            'composerName' => 'required|string',
+            'composerName' => 'required|string|unique:App\Models\Composer,composer_name',
         ];
     }
 
@@ -23,7 +23,8 @@ class StoreComposerRequest extends BaseRequest
     {
         return [
             'composerName.required' => 'Поле composerName является обязательным.',
-            'composerName.string' => 'Поле composerName должы быть строкового типа.'
+            'composerName.string' => 'Поле composerName должно быть строкового типа.',
+            'composerName.unique' => 'Такой композитор уже существует.'
         ];
     }
 }

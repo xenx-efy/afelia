@@ -24,18 +24,23 @@ use Illuminate\Routing\Controller as BaseController;
 
 /**
  * @OA\Tag(
- *     name="composer",
+ *     name="Composer",
  *     description="Управление сущностью композитора"
  * )
  *
  * @OA\Tag(
- *     name="composition",
+ *     name="Composition",
  *     description="Управление сущностью произведений"
  * )
  *
  * @OA\Tag(
- *     name="tag",
+ *     name="Tag",
  *     description="Управление сущностью тегов"
+ * )
+ *
+ * @OA\Tag(
+ *     name="User",
+ *     description="Управление сущностью пользователя"
  * )
  *
  * @OA\Server(

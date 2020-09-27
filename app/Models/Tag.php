@@ -12,6 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * @property integer $id Tag unique identifier
  * @property string $title Tag name
+ * @method static get()
+ * @method static create(array $array)
+ * @method static find($tagId)
  */
 class Tag extends Model
 {

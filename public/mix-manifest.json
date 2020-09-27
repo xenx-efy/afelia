@@ -3,5 +3,10 @@
     "/css/base.css": "/css/base.css",
     "/css/login.css": "/css/login.css",
     "/css/tracks.css": "/css/tracks.css",
-    "/js/track.js": "/js/track.js"
+    "/js/base.js.map": "/js/base.js.map",
+    "/css/base.css.map": "/css/base.css.map",
+    "/css/login.css.map": "/css/login.css.map",
+    "/css/tracks.css.map": "/css/tracks.css.map",
+    "/js/track.js": "/js/track.js",
+    "/js/track.js.map": "/js/track.js.map"
 }

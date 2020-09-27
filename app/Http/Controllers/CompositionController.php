@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Composition\StoreCompositionRequest;
-use App\Http\Requests\Composition\DeleteCompositionRequest;
 use App\Http\Requests\Composition\GetCompositionsRequest;
 use App\Http\Requests\Composition\UpdateCompositionRequest;
 use App\Http\Resources\CompositionCollection;
 use App\Http\Resources\CompositionResource;
 use App\Models\Composition;
+use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response;
 
 class CompositionController extends Controller
 {
@@ -26,22 +31,59 @@ class CompositionController extends Controller
      *
      * @OA\Get(
      *     path="/tracks",
-     *     tags={"composition"},
+     *     tags={"Composition"},
      *     operationId="getCompositions",
-     *     summary="Get all compositions with sorting",
+     *     summary="Получение треков с возможностью сортировки.",
+     *     @OA\Parameter(
+     *         description="Сортироует треки по орпеделенному полю.",
+     *         in="query",
+     *         name="sortBy",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"title", "last_played"},
+     *         ),
+     *     ),
+     *     @OA\Parameter(
+     *         description="Прямая или обратная сортировка.",
+     *         in="query",
+     *         name="sortType",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"asc", "desc"},
+     *         ),
+     *     ),
+     *     @OA\Parameter(
+     *         description="Фильтрация по названию трека или фамилии композитора.",
+     *         in="query",
+     *         name="title",
+     *         required=false,
+     *         @OA\Schema(
+     *           type="string",
+     *         ),
+     *     ),
+     *     @OA\Parameter(
+     *         description="Фильтрация по тегам",
+     *         in="query",
+     *         name="tags[]",
+     *         required=false,
+     *         @OA\Schema(
+     *           type="array",
+     *           @OA\Items(type="integer"),
+     *         ),
+     *     ),
      *     @OA\Response(
      *          response=200,
-     *          description="Some response"
+     *          description="Success response"
      *      ),
      * )
-     *
-     * @link https://www.notion.so/xenx/API-1542727d71214b798d7d2050729244c5#057f7de39f4d4dd488e53cd8ec74a8af
      *
      * @param GetCompositionsRequest $request
      *
      * @return CompositionCollection
      */
-    public function index(GetCompositionsRequest $request)
+    public function index(GetCompositionsRequest $request): JsonResource
     {
         $query = Composition::with('tags')->with('composer');
 
@@ -68,7 +110,55 @@ class CompositionController extends Controller
         return new CompositionCollection($tracks);
     }
 
-    public function store(StoreCompositionRequest $request)
+    /**
+     * Save track to db
+     *
+     * @OA\Post(
+     *     path="/tracks",
+     *     tags={"Composition"},
+     *     operationId="storeCompositions",
+     *     summary="Создает композицию с информацией о ней.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     description="Название произведения",
+     *                     property="title",
+     *                     type="string",
+     *                     example="Adazio",
+     *                 ),
+     *                 @OA\Property(
+     *                     description="Id композитора произведения",
+     *                     property="composerId",
+     *                     type="integer",
+     *                     example=12,
+     *                 ),
+     *                 @OA\Property(
+     *                     description="Теги произведения",
+     *                     property="tags",
+     *                     type="array",
+     *                     example=1,
+     *                     @OA\Items(type="integer"),
+     *                 ),
+     *                 required={"title", "composerId", "tags"},
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Success response"
+     *      ),
+     *     @OA\Response(
+     *          response=201,
+     *          description="Success creation"
+     *      ),
+     * )
+     * @param StoreCompositionRequest $request
+     * @return JsonResource
+     */
+    public function store(StoreCompositionRequest $request): JsonResource
     {
         /** @var Composition $track */
         $track = Composition::create([
@@ -85,31 +175,120 @@ class CompositionController extends Controller
         return (new CompositionResource($track))->additional(['status' => 'success']);
     }
 
-    public function update(UpdateCompositionRequest $request)
+    /**
+     * Update track
+     *
+     * @OA\Put(
+     *     path="/tracks/{id}",
+     *     tags={"Composition"},
+     *     operationId="updateComposition",
+     *     summary="Обновляет информацию о треке.",
+     *     @OA\Parameter(
+     *         description="Id обновляемого трека",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *           type="integer",
+     *         ),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Формат входящих данных",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     description="Название произведения",
+     *                     property="title",
+     *                     type="string",
+     *                     example="Adazio",
+     *                 ),
+     *                 @OA\Property(
+     *                     description="Id композитора произведения",
+     *                     property="composerId",
+     *                     type="integer",
+     *                     example=12,
+     *                 ),
+     *                 @OA\Property(
+     *                     description="Теги произведения",
+     *                     property="tags",
+     *                     type="array",
+     *                     @OA\Items(type="integer"),
+     *                 ),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success response"
+     *     ),
+     * )
+     *
+     * @param int $id
+     * @param UpdateCompositionRequest $request
+     *
+     * @return Application|ResponseFactory|JsonResponse|Response
+     */
+    public function update($id, UpdateCompositionRequest $request)
     {
+        $trackId = (int)$id;
         /** @var Composition $track */
-        $track = Composition::find($request->trackId);
+        $track = Composition::find($trackId);
 
         $track->title = $request->title;
         $track->composer_id = $request->composerId;
 
-        if ($request->has('tags')) $track->tags()->sync($request->tags);
+        if ($request->has('tags')) {
+            $track->tags()->sync($request->tags);
+        }
 
-        if (!$track->save()) return response()->json(['status' => 'error', 'errors' => [
-            'message' => 'Ошибка сохранения произведения',
-        ]]);
+        if (!$track->save()) {
+            return response()->json(['status' => 'error', 'errors' => [
+                'message' => 'Ошибка сохранения произведения',
+            ]]);
+        }
 
         return response('', 200);
     }
 
-    public function delete(DeleteCompositionRequest $request)
+    /**
+     * Delete track
+     *
+     * @OA\Delete(
+     *     path="/tracks/{id}",
+     *     tags={"Composition"},
+     *     operationId="deleteCompotition",
+     *     summary="Удалить трек.",
+     *     @OA\Parameter(
+     *         description="Id удаляемого трека",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *           type="integer",
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success response"
+     *     ),
+     * )
+     *
+     * @param $id
+     *
+     * @return Application|ResponseFactory|JsonResponse|Response
+     */
+    public function delete($id)
     {
+        $trackId = (int)$id;
+
         /** @var Composition $track */
-        $track = Composition::find($request->trackId);
+        $track = Composition::find($trackId);
 
         try {
             $track->delete();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['status' => 'error', 'errors' => [
                 'message' => 'Ошибка удаления композиции.',
             ]]);

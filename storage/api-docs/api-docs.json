@@ -19,16 +19,561 @@
         }
     ],
     "paths": {
+        "/composers": {
+            "get": {
+                "tags": [
+                    "Composer"
+                ],
+                "summary": "Получение композиторов.",
+                "operationId": "getComposers",
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Composer"
+                ],
+                "summary": "Создает композитора.",
+                "operationId": "storeComposer",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "composerName"
+                                ],
+                                "properties": {
+                                    "composerName": {
+                                        "description": "Название произведения",
+                                        "type": "string",
+                                        "example": "Бетховен"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    },
+                    "201": {
+                        "description": "Success creation"
+                    }
+                }
+            }
+        },
+        "/composers/{id}": {
+            "put": {
+                "tags": [
+                    "Composer"
+                ],
+                "summary": "Обновляет информацию о композиторе.",
+                "operationId": "updateComposer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id обновляемого композитора",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Формат входящих данных",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "composerName": {
+                                        "description": "Название произведения",
+                                        "type": "string",
+                                        "example": "Adazio"
+                                    },
+                                    "composerId": {
+                                        "description": "Id композитора произведения",
+                                        "type": "integer",
+                                        "example": 12
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Composer"
+                ],
+                "summary": "Удалить композитора.",
+                "operationId": "deleteComposer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id удаляемого композитора.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    }
+                }
+            }
+        },
         "/tracks": {
             "get": {
                 "tags": [
-                    "composition"
+                    "Composition"
                 ],
-                "summary": "Get all compositions with sorting",
+                "summary": "Получение треков с возможностью сортировки.",
                 "operationId": "getCompositions",
+                "parameters": [
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "Сортироует треки по орпеделенному полю.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "title",
+                                "last_played"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sortType",
+                        "in": "query",
+                        "description": "Прямая или обратная сортировка.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Фильтрация по названию трека или фамилии композитора.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tags[]",
+                        "in": "query",
+                        "description": "Фильтрация по тегам",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Some response"
+                        "description": "Success response"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Composition"
+                ],
+                "summary": "Создает композицию с информацией о ней.",
+                "operationId": "storeCompositions",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "composerId",
+                                    "tags"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "Название произведения",
+                                        "type": "string",
+                                        "example": "Adazio"
+                                    },
+                                    "composerId": {
+                                        "description": "Id композитора произведения",
+                                        "type": "integer",
+                                        "example": 12
+                                    },
+                                    "tags": {
+                                        "description": "Теги произведения",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    },
+                    "201": {
+                        "description": "Success creation"
+                    }
+                }
+            }
+        },
+        "/tracks/{id}": {
+            "put": {
+                "tags": [
+                    "Composition"
+                ],
+                "summary": "Обновляет информацию о треке.",
+                "operationId": "updateComposition",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id обновляемого трека",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Формат входящих данных",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Название произведения",
+                                        "type": "string",
+                                        "example": "Adazio"
+                                    },
+                                    "composerId": {
+                                        "description": "Id композитора произведения",
+                                        "type": "integer",
+                                        "example": 12
+                                    },
+                                    "tags": {
+                                        "description": "Теги произведения",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Composition"
+                ],
+                "summary": "Удалить трек.",
+                "operationId": "deleteCompotition",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id удаляемого трека",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    }
+                }
+            }
+        },
+        "/tags": {
+            "get": {
+                "tags": [
+                    "Tag"
+                ],
+                "summary": "Получение тегов.",
+                "operationId": "getTags",
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Tag"
+                ],
+                "summary": "Создает тег.",
+                "operationId": "storeTag",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "Название тега",
+                                        "type": "string",
+                                        "example": "Smooth"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    },
+                    "201": {
+                        "description": "Success creation"
+                    }
+                }
+            }
+        },
+        "/tags/{id}": {
+            "put": {
+                "tags": [
+                    "Tag"
+                ],
+                "summary": "Обновляет информацию о теге.",
+                "operationId": "updateTag",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id обновляемого тега",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Формат входящих данных",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Название тега",
+                                        "type": "string",
+                                        "example": "Adazio"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tag"
+                ],
+                "summary": "Удалить тег.",
+                "operationId": "deleteTag",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id удаляемого тега.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Получение пользователей.",
+                "operationId": "getUsers",
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Создает пользователя",
+                "operationId": "storeUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "is_admin"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "ФИО пользователя",
+                                        "type": "string",
+                                        "example": "Лебовский Василий Пупкин"
+                                    },
+                                    "email": {
+                                        "description": "Email пользователя",
+                                        "type": "string",
+                                        "example": "lebovskiy@gmail.com"
+                                    },
+                                    "is_admin": {
+                                        "description": "Признак администратора",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    },
+                    "201": {
+                        "description": "Success creation"
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Обновляет информацию о пользователе.",
+                "operationId": "updateUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id обновляемого пользователя",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Формат входящих данных",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "ФИО пользователя.",
+                                        "type": "string",
+                                        "example": "Лебовский Василий Пупкин"
+                                    },
+                                    "email": {
+                                        "description": "Email пользователя.",
+                                        "type": "string",
+                                        "example": "lebovskiy@gmail.com"
+                                    },
+                                    "is_admin": {
+                                        "description": "Признак администратора.",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Удалить пользователя.",
+                "operationId": "deleteUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id удаляемого пользователя.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response"
                     }
                 }
             }
@@ -36,16 +581,20 @@
     },
     "tags": [
         {
-            "name": "composer",
+            "name": "Composer",
             "description": "Управление сущностью композитора"
         },
         {
-            "name": "composition",
+            "name": "Composition",
             "description": "Управление сущностью произведений"
         },
         {
-            "name": "tag",
+            "name": "Tag",
             "description": "Управление сущностью тегов"
+        },
+        {
+            "name": "User",
+            "description": "Управление сущностью пользователя"
         }
     ],
     "security": [

@@ -4,6 +4,11 @@ namespace App\Http\Requests\Composition;
 
 use App\Http\Requests\BaseRequest;
 
+/**
+ * @property string title
+ * @property int composerId
+ * @property array tags
+ */
 class StoreCompositionRequest extends BaseRequest
 {
 
@@ -12,7 +17,7 @@ class StoreCompositionRequest extends BaseRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules():array
     {
         return [
             'title' => 'required|min:3',
@@ -21,7 +26,7 @@ class StoreCompositionRequest extends BaseRequest
         ];
     }
 
-    public function messages()
+    public function messages():array
     {
         return [
             'title.required' => 'Поле title является обязательным.',

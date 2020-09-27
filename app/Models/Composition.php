@@ -17,6 +17,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $title Composition title.
  * @property Carbon $createdAt Date of create composition.
  * @property Carbon $updatedAt Date of update composition.
+ * @property int composer_id Composer unique identifier.
+ *
+ * @method static create(array $array)
+ * @method static find($trackId)
  */
 class Composition extends Model
 {
