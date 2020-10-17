@@ -97,6 +97,7 @@ class CompositionController extends Controller
                 ->orWhereHas('composer', function ($query) use ($title) {
                     $query->where('composer_name', 'like', '%' . $title . '%');
                 })
+                ->orderBy('title', 'asc')
                 ->paginate(self::PAGINATE_COUNT)->appends('title', $title);
         } elseif ($request->has('tags')) {
             $tags = $request->tags;

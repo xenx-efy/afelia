@@ -1,7 +1,6 @@
 <?php
 
 
-use App\Model;
 use App\Models\Composer;
 use App\Models\Composition;
 use Faker\Generator as Faker;
