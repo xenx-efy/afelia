@@ -1,5 +1,7 @@
 # Orchestra organizer site
 
+> Api documentation on `http://localhost/api/documentation` route.
+
 ## Dev
 ```
 git clone https://github.com/xenx-efy/afelia
