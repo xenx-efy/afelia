@@ -17,6 +17,7 @@ Route::prefix('async')->group(function () {
     Route::post('/tracks', [CompositionController::class, 'store']);
     Route::put('/tracks/{id}', [CompositionController::class, 'update']);
     Route::delete('/tracks/{id}', [CompositionController::class, 'delete']);
+    Route::post('/tracks/{id}', [CompositionController::class, 'nowPlayed']);
 
     Route::get('/tags', [TagController::class, 'index']);
     Route::post('/tags', [TagController::class, 'store']);

@@ -49,10 +49,11 @@ class TagController extends Controller
      *             mediaType="application/json",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     description="Название тега",
-     *                     property="title",
-     *                     type="string",
+     *                     description="Нвазния тегов",
+     *                     property="titles",
+     *                     type="array",
      *                     example="Smooth",
+     *                     @OA\Items(type="string"),
      *                 ),
      *                 required={"title"},
      *             )
@@ -69,15 +70,18 @@ class TagController extends Controller
      * )
      * @param StoreTagRequest $request
      *
-     * @return TagResource
+     * @return TagCollection
      */
-    public function store(StoreTagRequest $request): TagResource
+    public function store(StoreTagRequest $request): TagCollection
     {
-        $tag = Tag::create([
-            'title' => $request->title
-        ]);
+        $tags = [];
+        foreach ($request->titles as $title) {
+            $tags[] = Tag::create([
+                'title' => $title
+            ]);
+        }
 
-        return (new TagResource($tag))->additional(['status' => 'success']);
+        return new TagCollection($tags);
     }
 
 
