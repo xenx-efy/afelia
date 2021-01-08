@@ -42,10 +42,11 @@
                         </div>
                     </form>
                 </div>
-                <div class="header-content_image">
-                    <img src={{ asset('/image/bg-home.jpg') }}>
-                </div>
             </div>
+        </div>
+        <div class="header-bg">
+            <div class="header-bg__church"><img src="{{ asset('/image/bg-home.png') }}" class="header-bg__image"></div>
+            <div class="header-bg__cloud"><img src="{{ asset('/image/heaven.png') }}" class="header-bg__image"></div>
         </div>
     </section>
 
