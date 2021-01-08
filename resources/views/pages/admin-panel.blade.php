@@ -60,28 +60,15 @@
     <div class="all-tags hidden">
         <ul class="tags-list">
            @foreach($tags as $tag)
-                <label>
-                    <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="hidden">
-                    <li class="tags-list_item">
-                        {{ $tag->title }}
-                    </li>
-                </label>
+                    <label>
+                        <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="hidden">
+                        <li class="tags-list_item">
+                            {{ $tag->title }}
+                        </li>
+                    </label>
             @endforeach
         </ul>
     </div>
-    <div class="controls">
-        <button class="btn-def btn-circle btn-success" id="add-compositions">+</button>
-    </div>
-    <select class="hidden" id="tags-select">
-        @foreach($tags as $item)
-            <option value="{{ $item->id }}">{{ $item->title }}</option>
-        @endforeach
-    </select>
-    <select class="hidden" id="composers-select">
-        @foreach($composers as $item)
-            <option value="{{ $item->id }}">{{ $item->title }}</option>
-        @endforeach
-    </select>
 @endsection
 
 @push('any-scripts')

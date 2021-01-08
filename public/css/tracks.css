@@ -101,7 +101,25 @@ header .search label {
   }
 }
 
-header .search-reset {
+header .search button {
+  width: 130px;
+}
+
+header .search button.hide {
+  width: 0;
+  padding: 0;
+  height: 0;
+  transform: scale(0) !important;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 480px) {
+  header .search button {
+    font-size: 14px;
+  }
+}
+
+header .search button.search-reset {
   width: 0px;
   height: 0px;
   display: flex;
@@ -117,7 +135,7 @@ header .search-reset {
   opacity: 0;
 }
 
-header .search-reset.show {
+header .search button.search-reset.show {
   transform: scale(1);
   opacity: 1;
   width: 50px;
@@ -126,26 +144,12 @@ header .search-reset.show {
   margin-right: 10px;
 }
 
-header .search-reset.show:hover {
+header .search button.search-reset.show:hover {
   transform: scale(0.95) translateZ(1px);
 }
 
-header .search-reset img {
+header .search button.search-reset img {
   width: 16px;
-}
-
-header .search button.hide {
-  width: 0;
-  padding: 0;
-  height: 0;
-  transform: scale(0) !important;
-  overflow: hidden;
-}
-
-@media screen and (max-width: 480px) {
-  header .search button {
-    font-size: 14px;
-  }
 }
 
 .table {
@@ -416,5 +420,11 @@ header .search button.hide {
 
 .tags-popup .btns button {
   margin: 0 5px;
+}
+
+.controls {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
 }
 

@@ -32,7 +32,7 @@ body {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 img {
@@ -103,8 +103,43 @@ button.disable {
   pointer-events: none;
 }
 
+button.btn-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+button.btn-def {
+  text-align: center;
+  box-shadow: 0px 0px 20px -9px #000;
+  color: #fff;
+  font-size: 2em;
+  line-height: 1em;
+}
+
+button.btn-usually {
+  background: linear-gradient(45deg, #0c89ec, #59e5ff);
+}
+
+button.btn-success {
+  background: linear-gradient(45deg, #4CAF50, #8BC34A);
+}
+
+button.btn-negative {
+  background: linear-gradient(45deg, #E91E63, #F44336);
+}
+
+button.btn__next-field {
+  margin-left: 10px;
+}
+
+button.btn__add-arrow img {
+  width: 20px;
+}
+
 input,
-button {
+button,
+select {
   -webkit-appearance: none;
   border: 0;
   outline: none;
@@ -126,9 +161,29 @@ input[type=number] {
   background: #fff;
 }
 
+select {
+  width: 100%;
+  height: 50px;
+  border-radius: 25px;
+  padding: 10px 25px 10px 25px;
+  background: url(/images/select-arrow.svg?3c7b053baaba16270b366588e9f84c80);
+}
+
+.field-bordered {
+  border: 2px solid #1995ef;
+}
+
+.field__right-btn {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+}
+
 button[type=submit] {
   height: 50px;
-  width: 130px;
   padding: 0 30px;
   border-radius: 30px;
   background: linear-gradient(45deg, #0c89ec, #59e5ff);
@@ -152,6 +207,15 @@ form label {
   width: 100%;
   position: relative;
   margin-bottom: 18px;
+}
+
+form label.label__one-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+form label.label__one-row button {
+  flex-shrink: 0;
 }
 
 form .placeholder {

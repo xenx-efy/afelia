@@ -396,3 +396,118 @@ const paginate = () => {
 };
 
 paginate();
+
+const addCompoBtn = document.getElementById("add-compositions");
+const modalNewCompo = modal({
+    "title": "Новая композиция",
+    "content": `
+    <form name="newCompos">
+    <label><input type="text" name="composition" class="field-bordered"><span class="placeholder">Введите название</span></label>
+    <label class="label__one-row">
+    <select name="author" class="field-bordered">
+        <option>Выберите автора</option>
+    </select>
+    <button class="btn__next-field btn-def btn-circle btn-usually btn__show-item" data-target=".new-composer__row">+</button>
+    </label>
+    <label class="new-composer__row label__one-row hidden">
+    <input class="field-bordered" name="new-composer" type="text">
+    <span class="placeholder">Новый автор</span>
+    <button class="btn__next-field btn-def btn-circle btn-success btn__add-arrow"><img src="./image/add-arrow.svg"></button>
+    </label>
+    <label class="label__one-row">
+    <select name="author" class="field-bordered">
+        <option>Выберите теги</option>
+    </select>
+    <button class="btn__next-field btn-def btn-circle btn-usually btn__show-item" data-target=".new-tags__row">+</button></label>
+    <label class="new-tags__row label__one-row hidden">
+    <input class="field-bordered" name="new-tags" type="text">
+    <span class="placeholder">Новые теги</span>
+    <button class="btn__next-field btn-def btn-circle btn-success btn__add-arrow"><img src="./image/add-arrow.svg"></button>
+    </label>
+    <div class="btns text-center">
+    <button type="submit" name="btnSubmit">Добавить</button>
+    </div>
+    </form>`,
+    "class": "tags-popup",
+    "onBuild": (modal) => {
+
+        const {tagsForm} = document;
+
+        tagsForm.addEventListener("submit", (event) => {
+        
+            event.preventDefault();
+
+            const tags = tagsForm.querySelectorAll("input[type=checkbox]:checked");
+            let tagsArray = Array.from(tags);
+        
+            tagsArray = tagsArray.map((tag) => tag.value);
+            getParams.tags = tagsArray;
+            getParams.page = 1;
+
+            getCompositions();
+
+            modal.hide();
+
+
+        });
+
+
+    }
+});
+
+addCompoBtn.addEventListener("click", () => {
+
+    modalNewCompo.show();
+
+});
+
+
+function showHideElements(){
+
+    function showElements(elem){
+
+        const selector = elem.dataset.target || null;
+        const target = document.querySelector(selector);
+        
+        if(target.classList.contains('hidden') && target !== null){
+            target.classList.remove('hidden')
+        }
+
+    }
+
+    function hideElements(elem){
+
+        const selector = elem.dataset.target || null;
+        const target = document.querySelector(selector);
+        
+        if(!target.classList.contains('hidden') && target !== null){
+            target.classList.add('hidden')
+        }
+    }
+
+    function init(){
+
+        document.addEventListener("click", function(event){
+
+            const classList = event.target.classList;
+
+            if(classList.contains('btn__show-item')){
+
+                event.preventDefault();
+                showElements(event.target);
+
+            }else if(classList.contains('btn__hide-item')){
+                
+                event.preventDefault();
+                hideElements(event.target);
+
+            }
+        })
+
+    }
+
+    init();
+
+}
+
+showHideElements();

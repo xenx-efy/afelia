@@ -77,36 +77,8 @@ header{
                 order: -1;
             }
         }
-        &-reset {
-            width: 0px;
-            height: 0px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            color: #fff;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #E91E63, #F44336);
-            box-shadow: 0px 0px 20px -8px #000;
-            margin-right: 10px;
-            transform: scale(0.5);
-            opacity: 0;
-            &.show {
-                transform: scale(1);
-                opacity: 1;
-                width: 50px;
-                height: 50px;
-                flex-shrink: 0;
-                margin-right: 10px;
-                &:hover{
-                    transform: scale(0.95) translateZ(1px);
-                }
-            }
-            & img {
-                width: 16px;
-            }
-        }
         button{
+            width: 130px;
             &.hide{
                 width: 0;
                 padding: 0;
@@ -116,6 +88,35 @@ header{
             }
             @media screen and (max-width: 480px){
                 font-size: 14px;
+            }
+            &.search-reset {
+                width: 0px;
+                height: 0px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 32px;
+                color: #fff;
+                border-radius: 50%;
+                background: linear-gradient(45deg, #E91E63, #F44336);
+                box-shadow: 0px 0px 20px -8px #000;
+                margin-right: 10px;
+                transform: scale(0.5);
+                opacity: 0;
+                &.show {
+                    transform: scale(1);
+                    opacity: 1;
+                    width: 50px;
+                    height: 50px;
+                    flex-shrink: 0;
+                    margin-right: 10px;
+                    &:hover{
+                        transform: scale(0.95) translateZ(1px);
+                    }
+                }
+                & img {
+                    width: 16px;
+                }
             }
         }
     }
@@ -318,4 +319,10 @@ header{
             margin: 0 5px;
         }
     }
+}
+
+.controls {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
 }
