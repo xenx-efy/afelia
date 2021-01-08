@@ -356,9 +356,12 @@
                                     "title"
                                 ],
                                 "properties": {
-                                    "title": {
-                                        "description": "Название тега",
-                                        "type": "string",
+                                    "titles": {
+                                        "description": "Нвазния тегов",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
                                         "example": "Smooth"
                                     }
                                 },

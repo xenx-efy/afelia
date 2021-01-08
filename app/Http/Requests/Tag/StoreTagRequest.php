@@ -6,7 +6,6 @@ use App\Http\Requests\BaseRequest;
 
 class StoreTagRequest extends BaseRequest
 {
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -15,15 +14,15 @@ class StoreTagRequest extends BaseRequest
     public function rules()
     {
         return [
-            'title' => 'required|string'
+            'titles' => 'required|array'
         ];
     }
 
     public function messages()
     {
         return [
-            'title.required' => 'Поле title является обязательным.',
-            'title.string' => 'Поле title должно быть строкового типа.',
+            'titles.required' => 'Поле title является обязательным.',
+            'titles.array' => 'Поле title должно быть массивом.',
         ];
     }
 }

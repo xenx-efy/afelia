@@ -297,4 +297,17 @@ class CompositionController extends Controller
 
         return response('', 200);
     }
+
+    public function nowPlayed($id)
+    {
+        $trackId = (int)$id;
+
+        $track = Composition::find($trackId);
+
+        $track->last_played = now();
+
+        $track->save();
+
+        return response()->json('');
+    }
 }

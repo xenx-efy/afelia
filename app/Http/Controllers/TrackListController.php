@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Composer;
 use App\Models\Composition;
 use App\Models\Tag;
 use Illuminate\View\View;
@@ -24,7 +25,8 @@ class TrackListController extends Controller
     {
         $tracks = Composition::with('tags')->orderBy('title')->paginate(self::PAGINATE_COUNT);
         $tags = Tag::get();
+        $composers = Composer::get();
 
-        return view('pages.track-list', compact('tracks', 'tags'));
+        return view('pages.track-list', compact('tracks', 'tags', 'composers'));
     }
 }
