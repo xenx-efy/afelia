@@ -11,7 +11,7 @@
         "eslint": "./node_modules/.bin/eslint resources/js/"
     },
     "devDependencies": {
-        "axios": "^0.19",
+        "axios": "^0.21",
         "cross-env": "^7.0.3",
         "eslint": "^7.17.0",
         "eslint-loader": "^4.0.2",
